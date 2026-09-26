@@ -1,0 +1,1675 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="Identificá animales con una foto y llevá su ficha productiva: pesadas, partos, sanidad, dieta y faena.">
+<meta name="theme-color" content="#2E6A4B">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon.svg">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Caravana Digital</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=Public+Sans:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+:root{
+  --bg:#F2F3EE;--surface:#FFFFFF;--surface-2:#E7EAE1;--ink:#1D2420;--muted:#5C665E;--line:#D3D8CC;
+  --green:#2E6A4B;--green-ink:#FFFFFF;--green-soft:#DCE9E0;
+  --tag:#F2C230;--tag-ink:#2A2204;
+  --ok:#2E7D4F;--ok-soft:#DDEFE3;--warn:#9A6212;--warn-soft:#F7E9CF;--crit:#B3392F;--crit-soft:#F6DEDA;--info:#2F5E8C;--info-soft:#DDE7F2;
+  --display:"Bricolage Grotesque","Segoe UI",system-ui,sans-serif;
+  --body:"Public Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+  --r:12px;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  color-scheme:dark;
+  --bg:#121614;--surface:#1A201C;--surface-2:#242B26;--ink:#E7EBE4;--muted:#9AA59C;--line:#313A34;
+  --green:#62B489;--green-ink:#0C1A12;--green-soft:#1F3328;
+  --tag:#E9B92A;--tag-ink:#231B02;
+  --ok:#6CC592;--ok-soft:#1D3326;--warn:#E3AE55;--warn-soft:#3A2E17;--crit:#E7837A;--crit-soft:#3C2220;--info:#86AEDB;--info-soft:#1D2C3D;
+}}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#121614;--surface:#1A201C;--surface-2:#242B26;--ink:#E7EBE4;--muted:#9AA59C;--line:#313A34;
+  --green:#62B489;--green-ink:#0C1A12;--green-soft:#1F3328;
+  --tag:#E9B92A;--tag-ink:#231B02;
+  --ok:#6CC592;--ok-soft:#1D3326;--warn:#E3AE55;--warn-soft:#3A2E17;--crit:#E7837A;--crit-soft:#3C2220;--info:#86AEDB;--info-soft:#1D2C3D;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:15px/1.5 var(--body);margin:0}
+.wrap{max-width:760px;margin:0 auto;padding-inline:16px;padding-block:0 110px}
+h1,h2,h3{font-family:var(--display);line-height:1.15;text-wrap:balance;margin:0}
+h1{font-size:1.35rem}h2{font-size:1.25rem}h3{font-size:1.02rem}
+.muted{color:var(--muted)}.small{font-size:.85rem}
+.num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--green);outline-offset:2px}
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
+.top .wrap{display:flex;align-items:center;gap:12px;padding-block:12px;padding-bottom:12px}
+.brand{display:flex;align-items:center;gap:10px}
+.top .espwrap{padding-block:0 10px;display:block}
+.espbar{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.espbar::-webkit-scrollbar{display:none}
+.espbar button{flex:none;border:1px solid var(--line);background:var(--surface);border-radius:99px;padding:6px 12px;font-size:.85rem;font-weight:600;color:var(--muted);display:inline-flex;gap:6px;align-items:center}
+.espbar button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.espbar .n{font-family:var(--mono);font-size:.75rem;opacity:.75}
+.diet h4{font-family:var(--display);font-size:.95rem;margin:0}
+.ration{width:100%;border-collapse:collapse;font-size:.9rem}
+.ration th{text-align:left;font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600;padding:6px 8px;border-bottom:1px solid var(--line)}
+.ration td{padding:8px;border-bottom:1px solid var(--line);vertical-align:top}
+.ration td.q{font-family:var(--mono);white-space:nowrap}
+.tbl{overflow-x:auto}
+.checks{display:flex;flex-wrap:wrap;gap:6px}
+.checks label{display:inline-flex;gap:6px;align-items:center;border:1px solid var(--line);border-radius:99px;padding:5px 10px;font-size:.85rem;cursor:pointer;background:var(--surface)}
+.checks input{width:auto;margin:0;accent-color:var(--green)}
+.checks label:has(input:checked){background:var(--green-soft);border-color:var(--green)}
+.reqs{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.reqs div{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:8px 10px}
+.reqs span{display:block;font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.reqs b{font-family:var(--mono);font-size:.95rem}
+ul.tight{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:3px;font-size:.9rem}
+.brand-mark{width:30px;height:34px;background:var(--tag);border-radius:9px 9px 14px 14px;position:relative;flex:none}
+.brand-mark::before{content:"";position:absolute;top:6px;left:50%;width:7px;height:7px;margin-left:-3.5px;border-radius:50%;background:var(--bg)}
+.brand small{display:block;color:var(--muted);font-size:.78rem;font-family:var(--body);font-weight:400}
+.spacer{flex:1}
+.nav{position:fixed;left:0;right:0;bottom:0;z-index:6;background:var(--surface);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px)}
+.nav .in{max-width:760px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr)}
+.nav button{background:none;border:0;padding:10px 4px 12px;display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--muted);font-size:.78rem;font-weight:600}
+.nav button svg{width:22px;height:22px}
+.nav button[aria-current="true"]{color:var(--green)}
+.nav .badge{background:var(--crit);color:#fff;border-radius:99px;font-size:.68rem;padding:0 6px;margin-left:2px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:10px;border:1px solid var(--line);background:var(--surface);padding:10px 14px;font-weight:600}
+.btn.primary{background:var(--green);color:var(--green-ink);border-color:var(--green)}
+.btn.ghost{background:transparent}
+.btn.danger{color:var(--crit);border-color:var(--crit)}
+.btn.sm{padding:6px 10px;font-size:.85rem;border-radius:8px}
+.btn:disabled{opacity:.55;cursor:default}
+.btn svg{width:18px;height:18px}
+.stack{display:flex;flex-direction:column;gap:14px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px}
+.section{padding-top:18px;display:flex;flex-direction:column;gap:14px}
+.eyebrow{font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.tag{display:inline-flex;align-items:center;font-family:var(--mono);font-weight:700;background:var(--tag);color:var(--tag-ink);border-radius:7px 7px 11px 11px;padding:6px 9px 4px;position:relative;font-size:.92rem;letter-spacing:.02em;white-space:nowrap}
+.tag::before{content:"";position:absolute;top:3px;left:50%;width:4px;height:4px;margin-left:-2px;border-radius:50%;background:var(--tag-ink);opacity:.35}
+.tag.big{font-size:1.35rem;padding:12px 14px 8px;border-radius:10px 10px 18px 18px}
+.tag.big::before{top:5px;width:6px;height:6px;margin-left:-3px}
+.tag.none{background:var(--surface-2);color:var(--muted)}
+.chip{display:inline-flex;align-items:center;gap:5px;font-size:.76rem;font-weight:600;border-radius:99px;padding:3px 9px;white-space:nowrap}
+.chip.ok{background:var(--ok-soft);color:var(--ok)}.chip.warn{background:var(--warn-soft);color:var(--warn)}.chip.crit{background:var(--crit-soft);color:var(--crit)}.chip.info{background:var(--info-soft);color:var(--info)}.chip.mute{background:var(--surface-2);color:var(--muted)}
+.chip.celo{background:var(--tag);color:var(--tag-ink)}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+/* capture */
+.capture{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.capture label{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;min-height:110px;border:1.5px dashed var(--line);border-radius:var(--r);background:var(--surface);font-weight:600;cursor:pointer;text-align:center;padding:12px}
+.capture label:first-child{background:var(--green);color:var(--green-ink);border:0}
+.capture svg{width:30px;height:30px}
+.capture input{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
+.preview{display:grid;grid-template-columns:120px 1fr;gap:14px;align-items:start}
+.preview img{width:120px;height:120px;object-fit:cover;border-radius:10px;background:var(--surface-2)}
+@media (max-width:460px){.preview{grid-template-columns:1fr}.preview img{width:100%;height:auto;max-height:260px}}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;font-size:.9rem}
+.kv dt{color:var(--muted)}.kv dd{margin:0}
+.match{display:grid;grid-template-columns:52px 1fr auto;gap:12px;align-items:center;padding:10px;border:1px solid var(--line);border-radius:10px;background:var(--bg)}
+.match img,.thumb{width:52px;height:52px;border-radius:9px;object-fit:cover;background:var(--surface-2);display:block}
+.thumb.ph{display:flex;align-items:center;justify-content:center;color:var(--muted)}
+.meter{height:6px;border-radius:9px;background:var(--surface-2);overflow:hidden;width:70px}
+.meter span{display:block;height:100%;background:var(--green)}
+details.guide summary{cursor:pointer;font-weight:600}
+details.guide ul{margin:.6em 0 0;padding-left:1.2em;display:flex;flex-direction:column;gap:4px}
+/* rodeo */
+.toolbar{display:flex;gap:8px;flex-wrap:wrap}
+.toolbar input,.toolbar select{flex:1 1 150px;min-width:0}
+input,select,textarea{background:var(--surface);border:1px solid var(--line);border-radius:9px;padding:9px 11px;width:100%}
+textarea{min-height:70px;resize:vertical}
+.list{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:var(--r);background:var(--surface);overflow:hidden}
+.item{display:grid;grid-template-columns:52px 1fr auto;gap:12px;align-items:center;padding:12px;border:0;border-bottom:1px solid var(--line);background:none;text-align:left;width:100%}
+.item:last-child{border-bottom:0}
+.item:hover{background:var(--surface-2)}
+.item .l1{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.item .name{font-weight:600}
+.item .r{text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:4px}
+.empty{padding:28px 16px;text-align:center;color:var(--muted)}
+.summary{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.summary div{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px}
+.summary b{display:block;font-family:var(--mono);font-size:1.25rem}
+.summary span{font-size:.75rem;color:var(--muted)}
+@media (max-width:460px){.summary{grid-template-columns:repeat(2,1fr)}}
+/* ficha */
+.hero{display:grid;grid-template-columns:150px 1fr;gap:16px;align-items:start}
+.hero .pic{width:150px;aspect-ratio:1;max-width:100%;border-radius:var(--r);object-fit:cover;background:var(--surface-2);display:flex;align-items:center;justify-content:center;color:var(--muted)}
+@media (max-width:500px){.hero{grid-template-columns:1fr}.hero .pic{width:100%;aspect-ratio:4/3}}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.stats div{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:8px 10px}
+.stats b{display:block;font-family:var(--mono);font-size:1.05rem}
+.stats span{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+@media (max-width:500px){.stats{grid-template-columns:repeat(2,1fr)}}
+.panels{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+@media (max-width:640px){.panels{grid-template-columns:1fr}}
+.panel{border-radius:10px;padding:12px;border:1px solid var(--line);background:var(--surface)}
+.panel.s-ok{border-left:4px solid var(--ok)}.panel.s-warn{border-left:4px solid var(--warn)}.panel.s-crit{border-left:4px solid var(--crit)}.panel.s-info{border-left:4px solid var(--info)}.panel.s-celo{border-left:4px solid var(--tag)}.panel.s-mute{border-left:4px solid var(--line)}
+.panel p{margin:.3em 0 0;font-size:.88rem}
+.tabs{display:flex;gap:4px;overflow-x:auto;border-bottom:1px solid var(--line)}
+.tabs button{background:none;border:0;border-bottom:2.5px solid transparent;padding:9px 12px;font-weight:600;color:var(--muted);white-space:nowrap}
+.tabs button[aria-selected="true"]{color:var(--ink);border-color:var(--green)}
+.tl{display:flex;flex-direction:column}
+.ev{display:grid;grid-template-columns:92px 1fr auto;gap:10px;padding:10px 0;border-bottom:1px solid var(--line);align-items:start}
+.ev:last-child{border-bottom:0}
+.ev .d{font-family:var(--mono);font-size:.82rem;color:var(--muted);padding-top:2px}
+.ev .x{background:none;border:0;color:var(--muted);padding:2px 6px;border-radius:6px}
+.ev .x:hover{color:var(--crit)}
+.gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px}
+.gallery figure{margin:0;display:flex;flex-direction:column;gap:4px}
+.gallery img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:10px;background:var(--surface-2)}
+.gallery figcaption{font-size:.78rem;color:var(--muted);display:flex;justify-content:space-between;gap:6px}
+.chart{overflow-x:auto}
+.chart svg{display:block;width:100%;height:auto;min-width:300px}
+/* form / sheet */
+.sheet{position:fixed;inset:0;z-index:20;background:rgba(10,14,12,.5);display:flex;align-items:flex-end;justify-content:center}
+.sheet .box{background:var(--surface);width:100%;max-width:640px;max-height:92vh;overflow:auto;border-radius:16px 16px 0 0;padding:18px 16px calc(18px + env(safe-area-inset-bottom,0px))}
+@media (min-width:700px){.sheet{align-items:center}.sheet .box{border-radius:16px}}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px 12px}
+.grid2 .full{grid-column:1/-1}
+@media (max-width:460px){.grid2{grid-template-columns:1fr}}
+.field{display:flex;flex-direction:column;gap:4px}
+.field label{font-size:.8rem;font-weight:600;color:var(--muted)}
+.field .hint{font-size:.75rem;color:var(--muted)}
+.banner{border-radius:10px;padding:10px 12px;font-size:.88rem}
+.banner.warn{background:var(--warn-soft);color:var(--warn)}
+.banner.info{background:var(--info-soft);color:var(--info)}
+.banner.crit{background:var(--crit-soft);color:var(--crit)}
+.alertbox{background:var(--crit-soft);color:var(--crit);border:2px solid var(--crit);border-radius:var(--r);padding:14px;display:flex;flex-direction:column;gap:10px}
+.alertbox h3{color:var(--crit)}
+.alertbox ul li,.alertbox p{color:var(--ink)}
+.checklist{display:flex;flex-direction:column;gap:6px}
+.checklist label{display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:start;padding:9px 10px;border:1px solid var(--line);border-radius:9px;cursor:pointer;font-size:.9rem;background:var(--surface)}
+.checklist input{width:18px;height:18px;margin:2px 0 0;accent-color:var(--green)}
+.checklist label.imp:not(:has(input:checked)){border-color:var(--crit);background:var(--crit-soft)}
+.checklist label:has(input:checked){border-color:var(--ok);background:var(--ok-soft)}
+.checklist .req{font-size:.7rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--crit);display:block}
+.veredicto{border-radius:10px;padding:10px 12px;font-weight:600}
+.veredicto.bad{background:var(--crit);color:var(--bg)}
+.veredicto.good{background:var(--ok);color:var(--bg)}
+.toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:9px 16px;border-radius:99px;font-size:.88rem;z-index:30;max-width:90vw}
+.alert-group{display:flex;flex-direction:column;gap:8px}
+.spin{width:16px;height:16px;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;animation:sp .8s linear infinite;display:inline-block}
+@keyframes sp{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.spin{animation:none}}
+</style>
+</head>
+<body>
+
+<header class="top"><div class="wrap">
+  <div class="brand"><div class="brand-mark" aria-hidden="true"></div><div><h1>Caravana Digital</h1><small>Identificación y seguimiento del rodeo · funciona sin internet</small></div></div>
+  <div class="spacer"></div>
+</div><div class="wrap espwrap"><div class="espbar" id="espBar" role="group" aria-label="Elegir especie"></div></div></header>
+
+<main class="wrap" id="app"></main>
+
+<nav class="nav"><div class="in">
+  <button data-go="identificar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>Identificar</button>
+  <button data-go="rodeo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h16M4 18h10"/></svg>Rodeo</button>
+  <button data-go="alertas"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 16V11a6 6 0 1 1 12 0v5l2 2H4z"/><path d="M10 21h4"/></svg><span>Agenda<span id="navBadge"></span></span></button>
+  <button data-go="nuevo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>Nuevo animal</button>
+</div></nav>
+
+<div id="sheet"></div>
+<div id="toast" class="toast" hidden></div>
+
+<script src="lib/tf.min.js"></script>
+<script src="lib/mobilenet.min.js"></script>
+<script src="lib/blazeface.min.js"></script>
+<script>
+window.__SIN_IA=true;
+/* Caravana Digital – versión web.
+   Reemplaza los servicios de Claude por: IndexedDB (datos y fotos en el dispositivo)
+   y /api/ia (función de Netlify que llama a la IA con la clave guardada en el servidor). */
+(function(){
+  if (window.claude) return;
+  const reqP = r => new Promise((ok,ko)=>{ r.onsuccess=()=>ok(r.result); r.onerror=()=>ko(r.error) });
+  let dbp=null;
+  function abrir(){
+    return dbp ||= new Promise((ok,ko)=>{
+      const r=indexedDB.open("caravana-digital",1);
+      r.onupgradeneeded=()=>{ const d=r.result; if(!d.objectStoreNames.contains("docs")) d.createObjectStore("docs"); if(!d.objectStoreNames.contains("fotos")) d.createObjectStore("fotos"); };
+      r.onsuccess=()=>ok(r.result); r.onerror=()=>ko(r.error);
+    });
+  }
+  async function store(nombre,modo="readonly"){ const d=await abrir(); return d.transaction(nombre,modo).objectStore(nombre) }
+  async function todos(nombre){ const s=await store(nombre); const [k,v]=await Promise.all([reqP(s.getAllKeys()),reqP(s.getAll())]); return k.map((key,i)=>[key,v[i]]) }
+
+  /* ---- datos ---- */
+  const oyentes={};
+  async function emitir(col){
+    const filas=(await todos("docs")).filter(([k])=>k.startsWith(col+"/"));
+    const snap={docs:filas.map(([k,v])=>({id:k.slice(col.length+1),exists:true,data:()=>v})),size:filas.length,empty:!filas.length};
+    (oyentes[col]||[]).forEach(fn=>{ try{fn(snap)}catch(e){console.error(e)} });
+  }
+  const db={
+    collection(col){ return {
+      onSnapshot(next){ (oyentes[col] ||= []).push(next); emitir(col); return ()=>{ oyentes[col]=oyentes[col].filter(f=>f!==next) } },
+      doc(id){ const key=col+"/"+id; return {
+        async set(body){ const s=await store("docs","readwrite"); await reqP(s.put(JSON.parse(JSON.stringify(body)),key)) }, // la app ya actualizó su estado: no se reemite (evita pisar cambios más nuevos)
+        async delete(){ const s=await store("docs","readwrite"); await reqP(s.delete(key)) },
+        async get(){ const s=await store("docs"); const v=await reqP(s.get(key)); return {id,exists:v!==undefined,data:()=>v} }
+      }}
+    }}
+  };
+
+  /* ---- fotos ---- */
+  const urls={};
+  const nuevoId=()=>[...crypto.getRandomValues(new Uint8Array(16))].map(b=>b.toString(16).padStart(2,"0")).join("");
+  async function precargarFotos(){ for(const [id,blob] of await todos("fotos")) if(!urls[id]) urls[id]=URL.createObjectURL(blob); window.render?.() }
+  const assets={
+    async upload(blob,opt={}){ const id=nuevoId(); const b=blob.type?blob:new Blob([blob],{type:opt.type||"image/jpeg"}); const s=await store("fotos","readwrite"); await reqP(s.put(b,id)); urls[id]=URL.createObjectURL(b); return {id,url:urls[id],sizeBytes:b.size,contentType:b.type} },
+    async delete(id){ const s=await store("fotos","readwrite"); await reqP(s.delete(id)); return {deleted:true} },
+    async list(){ return {assets:[],usage:{}} }
+  };
+
+  /* ---- IA ---- */
+  const CLAVE="cd.codigo";
+  let pideCodigo=false;
+  const getCodigo=()=>{ try{return localStorage.getItem(CLAVE)||""}catch{return ""} };
+  async function aBase64(blob){
+    let b=blob;
+    try{ const bmp=await createImageBitmap(blob); const esc=Math.min(1,1280/Math.max(bmp.width,bmp.height)); const c=document.createElement("canvas"); c.width=Math.round(bmp.width*esc); c.height=Math.round(bmp.height*esc); c.getContext("2d").drawImage(bmp,0,0,c.width,c.height); b=await new Promise(r=>c.toBlob(x=>r(x||blob),"image/jpeg",.82)); }catch{}
+    const buf=new Uint8Array(await b.arrayBuffer()); let s=""; for(let i=0;i<buf.length;i+=0x8000) s+=String.fromCharCode.apply(null,buf.subarray(i,i+0x8000)); return btoa(s);
+  }
+  async function sample(input,opts={}){
+    const prompt=typeof input==="string"?input:input.map(t=>t.content).join("\n\n");
+    const imgs=opts.images?[...(opts.images instanceof Blob?[opts.images]:opts.images)]:[];
+    let res;
+    try{
+      res=await fetch("/api/ia",{method:"POST",signal:opts.signal,headers:{"content-type":"application/json","x-codigo":getCodigo()},
+        body:JSON.stringify({prompt,images:await Promise.all(imgs.slice(0,5).map(aBase64)),max_tokens:opts.maxTokens||4000})});
+    }catch(e){ throw {code:e?.name==="AbortError"?"cancelled":"upstream_error",message:String(e)} }
+    if(res.status===401){ pideCodigo=true; try{localStorage.removeItem(CLAVE)}catch{} window.render?.(); throw {code:"codigo",message:"código"} }
+    if(res.status===429) throw {code:"rate_limited",message:"límite"};
+    if(!res.ok){ let j={}; try{j=await res.json()}catch{} throw {code:j.error==="sin_clave"?"sin_clave":"upstream_error",message:JSON.stringify(j)} }
+    const rd=res.body.getReader(), dec=new TextDecoder(); let buf="", text="", stop=null;
+    for(;;){ const {done,value}=await rd.read(); if(done) break; buf+=dec.decode(value,{stream:true});
+      let i; while((i=buf.indexOf("\n"))>=0){ const line=buf.slice(0,i).trim(); buf=buf.slice(i+1);
+        if(!line.startsWith("data:")) continue; let ev; try{ev=JSON.parse(line.slice(5))}catch{continue}
+        if(ev.type==="content_block_delta" && ev.delta?.type==="text_delta"){ text+=ev.delta.text; opts.onText?.({text,delta:ev.delta.text}) }
+        else if(ev.type==="message_delta") stop=ev.delta?.stop_reason;
+        else if(ev.type==="error") throw {code:ev.error?.type==="overloaded_error"?"rate_limited":"upstream_error",message:ev.error?.message,text};
+      } }
+    if(!text.trim()) throw {code:"empty_completion",message:"sin texto"};
+    return {text,truncated:stop==="max_tokens",modelTierApplied:"default"};
+  }
+  function parsear(t){
+    try{return JSON.parse(t)}catch{}
+    const f=t.match(/```(?:json)?\s*([\s\S]*?)```/); if(f){ try{return JSON.parse(f[1])}catch{} }
+    const a=t.search(/[\[{]/), b=Math.max(t.lastIndexOf("}"),t.lastIndexOf("]"));
+    if(a>=0&&b>a){ try{return JSON.parse(t.slice(a,b+1))}catch{} }
+    throw {code:"invalid_json",message:"respuesta no es JSON",text:t};
+  }
+  sample.json=async(input,opts={})=>{ const r=await sample(input,{...opts,maxTokens:5000}); if(r.truncated) throw {code:"invalid_json",text:r.text}; return parsear(r.text) };
+  sample.limits=async()=>({maxPromptBytes:80000,images:{maxCount:5,maxInputBytes:20e6,mediaTypes:["image/jpeg","image/png","image/webp","image/gif"]}});
+
+  /* ---- copia de seguridad ---- */
+  async function exportar(){
+    const docs=await todos("docs"), fotos={};
+    for(const [id,blob] of await todos("fotos")) fotos[id]={type:blob.type,b64:await aB64crudo(blob)};
+    const data=JSON.stringify({app:"caravana-digital",version:1,fecha:new Date().toISOString(),docs:Object.fromEntries(docs),fotos});
+    const a=document.createElement("a"); a.href=URL.createObjectURL(new Blob([data],{type:"application/json"}));
+    a.download="caravana-digital-"+new Date().toISOString().slice(0,10)+".json"; document.body.appendChild(a); a.click(); a.remove();
+  }
+  async function aB64crudo(blob){ const buf=new Uint8Array(await blob.arrayBuffer()); let s=""; for(let i=0;i<buf.length;i+=0x8000) s+=String.fromCharCode.apply(null,buf.subarray(i,i+0x8000)); return btoa(s) }
+  async function importar(file){
+    const j=JSON.parse(await file.text()); if(j.app!=="caravana-digital") throw new Error("formato");
+    let n=0;
+    for(const [k,v] of Object.entries(j.docs||{})){ const s=await store("docs","readwrite"); await reqP(s.put(v,k)); n++ }
+    for(const [id,f] of Object.entries(j.fotos||{})){ const bin=atob(f.b64), u=new Uint8Array(bin.length); for(let i=0;i<bin.length;i++) u[i]=bin.charCodeAt(i);
+      const b=new Blob([u],{type:f.type||"image/jpeg"}); const s=await store("fotos","readwrite"); await reqP(s.put(b,id)); urls[id]=URL.createObjectURL(b) }
+    Object.keys(oyentes).forEach(emitir); return n;
+  }
+
+  window.__web={ fotoURL:id=>urls[id], pideCodigo:()=>pideCodigo&&!getCodigo(), setCodigo:v=>{ try{localStorage.setItem(CLAVE,v)}catch{} pideCodigo=false }, exportar, importar };
+  window.claude={ async use(n){
+    if(n==="db"){ try{ await abrir(); return db }catch{ return null } }
+    if(n==="assets"){ try{ await abrir(); precargarFotos(); return assets }catch{ return null } }
+    if(n==="sample") return window.__SIN_IA ? null : sample;
+    return null;
+  }};
+  try{ navigator.storage?.persist?.() }catch{}
+})();
+
+</script>
+<script>
+/* Caravana Digital – motor local (gratis, sin internet para analizar).
+   Reconoce la especie con MobileNet, detecta personas con BlazeFace e identifica
+   a cada animal comparando la "firma" de la foto con las fotos de referencia
+   guardadas en el celular. */
+(function(){
+  const MOBILENET_URL = "https://storage.googleapis.com/tfjs-models/savedmodel/mobilenet_v2_1.0_224/model.json";
+  let mnP=null, bfP=null, estadoModelo="sin cargar";
+
+  function cargarMobilenet(){
+    if(mnP) return mnP;
+    mnP=(async()=>{
+      if(!window.tf||!window.mobilenet){ estadoModelo="no disponible"; return null }
+      try{ estadoModelo="cargando"; const m=await mobilenet.load({version:2,alpha:1.0,modelUrl:MOBILENET_URL,inputRange:[0,1]}); estadoModelo="listo"; return m }
+      catch(e){ console.warn("MobileNet",e); try{ const m=await mobilenet.load({version:2,alpha:1.0}); estadoModelo="listo"; return m }catch(e2){ console.warn(e2); estadoModelo="no disponible"; return null } }
+    })();
+    return mnP;
+  }
+  const esperar=ms=>new Promise(r=>setTimeout(()=>r(null),ms));
+  const mnRapido=()=>Promise.race([cargarMobilenet(),esperar(20000)]);
+  function cargarBlazeface(){
+    if(bfP) return bfP;
+    bfP=(async()=>{ if(!window.tf||!window.blazeface) return null; try{ return await blazeface.load({modelUrl:"modelos/blazeface/model.json",maxFaces:3}) }catch(e){ console.warn("BlazeFace",e); return null } })();
+    return bfP;
+  }
+
+  /* ---------- imagen ---------- */
+  async function aCanvas(blob,max=512){
+    let src;
+    try{ src=await createImageBitmap(blob) }catch{ src=await new Promise((ok,ko)=>{const i=new Image();i.onload=()=>ok(i);i.onerror=ko;i.src=URL.createObjectURL(blob)}) }
+    const w=src.width, h=src.height, s=Math.min(1,max/Math.max(w,h));
+    const c=document.createElement("canvas"); c.width=Math.max(1,Math.round(w*s)); c.height=Math.max(1,Math.round(h*s));
+    c.getContext("2d").drawImage(src,0,0,c.width,c.height); return c;
+  }
+  function recorte(c,f){ // recorte central con fracción f
+    const w=Math.round(c.width*f), h=Math.round(c.height*f), x=Math.round((c.width-w)/2), y=Math.round((c.height-h)/2);
+    const o=document.createElement("canvas"); o.width=w; o.height=h; o.getContext("2d").drawImage(c,x,y,w,h,0,0,w,h); return o;
+  }
+  function escalar(c,W,H){ const o=document.createElement("canvas"); o.width=W; o.height=H; o.getContext("2d").drawImage(c,0,0,W,H); return o }
+
+  function rgb2hsv(r,g,b){ r/=255;g/=255;b/=255; const mx=Math.max(r,g,b),mn=Math.min(r,g,b),d=mx-mn; let h=0;
+    if(d){ if(mx===r) h=((g-b)/d)%6; else if(mx===g) h=(b-r)/d+2; else h=(r-g)/d+4; h/=6; if(h<0) h+=1 }
+    return [h, mx?d/mx:0, mx]; }
+
+  function histColor(c){ // 8 tonos x 3 saturación x 3 brillo = 72
+    const s=escalar(c,64,64), d=s.getContext("2d").getImageData(0,0,64,64).data, H=new Float32Array(72);
+    for(let i=0;i<d.length;i+=4){ const [h,sa,v]=rgb2hsv(d[i],d[i+1],d[i+2]); const hi=Math.min(7,Math.floor(h*8)), si=Math.min(2,Math.floor(sa*3)), vi=Math.min(2,Math.floor(v*3)); H[hi*9+si*3+vi]++ }
+    const t=64*64; for(let i=0;i<72;i++) H[i]/=t; return H;
+  }
+  function histTextura(c){ // gradientes: 4x4 celdas x 8 orientaciones = 128
+    const N=96, s=escalar(c,N,N), d=s.getContext("2d").getImageData(0,0,N,N).data, g=new Float32Array(N*N), H=new Float32Array(128);
+    for(let i=0;i<N*N;i++) g[i]=0.299*d[i*4]+0.587*d[i*4+1]+0.114*d[i*4+2];
+    for(let y=1;y<N-1;y++) for(let x=1;x<N-1;x++){
+      const gx=g[y*N+x+1]-g[y*N+x-1], gy=g[(y+1)*N+x]-g[(y-1)*N+x], m=Math.hypot(gx,gy); if(!m) continue;
+      let a=Math.atan2(gy,gx); if(a<0) a+=Math.PI; const b=Math.min(7,Math.floor(a/Math.PI*8));
+      const cx=Math.min(3,Math.floor(x/(N/4))), cy=Math.min(3,Math.floor(y/(N/4))); H[(cy*4+cx)*8+b]+=m }
+    let n=0; for(const v of H) n+=v*v; n=Math.sqrt(n)||1; for(let i=0;i<128;i++) H[i]/=n; return H;
+  }
+  function pelajeDe(c){
+    const s=escalar(recorte(c,.6),32,32), d=s.getContext("2d").getImageData(0,0,32,32).data; let neg=0,bla=0,col=0,ama=0,gri=0,t=0;
+    for(let i=0;i<d.length;i+=4){ const [h,sa,v]=rgb2hsv(d[i],d[i+1],d[i+2]); t++;
+      if(v<.22) neg++; else if(sa<.18&&v>.72) bla++; else if(sa<.18) gri++; else if(h<.07||h>.95) col++; else if(h<.17) ama++; }
+    const p=[["Negro",neg],["Blanco",bla],["Colorado",col],["Bayo / amarillento",ama],["Gris",gri]].sort((a,b)=>b[1]-a[1]);
+    if(p[0][1]/t<.45 && p[1][1]/t>.2) return `${p[0][0]} y ${p[1][0].toLowerCase()}`;
+    return p[0][0];
+  }
+
+  const cos=(a,b)=>{ let s=0,na=0,nb=0; for(let i=0;i<a.length;i++){ s+=a[i]*b[i]; na+=a[i]*a[i]; nb+=b[i]*b[i] } return na&&nb? s/Math.sqrt(na*nb) : 0 };
+  const inter=(a,b)=>{ let s=0; for(let i=0;i<a.length;i++) s+=Math.min(a[i],b[i]); return s };
+  const redondear=a=>Array.from(a,v=>Math.round(v*1000)/1000);
+
+  async function embedding(mn,c){ const t=mn.infer(escalar(c,224,224),true); const v=await t.data(); t.dispose(); return v }
+
+  /* Firma: dos vistas por foto (completa y recorte central) */
+  async function firmas(blob){
+    const c=await aCanvas(blob), mn=await mnRapido(), out=[];
+    for(const v of [c, recorte(c,.7)]){
+      out.push({e: mn? redondear(await embedding(mn,v)) : null, c: redondear(histColor(v)), x: redondear(histTextura(v))});
+    }
+    return out;
+  }
+  function similitud(q,r){
+    if(q.e && r.e) return .7*cos(q.e,r.e) + .2*inter(q.c,r.c) + .1*cos(q.x,r.x);
+    return .6*inter(q.c,r.c) + .4*cos(q.x,r.x);
+  }
+
+  /* ---------- especie ---------- */
+  const MAPA=[
+    [/water buffalo|bison/i,"Bubalino"],[/\box\b/i,"Bovino"],[/hog|wild boar|piggy/i,"Porcino"],
+    [/\bram\b|bighorn/i,"Ovino"],[/ibex/i,"Caprino"],[/hare|rabbit|angora/i,"Cunicola"],
+    [/\bhen\b|\bcock\b/i,"Aviar"],[/drake|goose|red-breasted merganser/i,"Pato"],[/quail|partridge/i,"Codorniz"],
+    [/black grouse|ptarmigan|prairie chicken/i,"Aviar"],[/llama|camel/i,"Camelido"],[/sorrel/i,"Equino"],
+    [/hamster|guinea pig|marmot|chinchilla/i,"Chinchilla"]
+  ];
+  const TRAD={"ox":"buey / vacuno","hog, pig, grunter, squealer":"cerdo","ram, tup":"carnero","hen":"gallina","cock":"gallo","drake":"pato","goose":"ganso","llama":"llama","sorrel":"caballo","water buffalo, water ox, Asiatic buffalo, Bubalus bubalis":"búfalo"};
+
+  async function especie(c){
+    const mn=await mnRapido(); if(!mn) return {especie:null,etiquetas:[]};
+    const res=await mn.classify(escalar(c,224,224),10);
+    const votos={}; for(const r of res){ const m=MAPA.find(([re])=>re.test(r.className)); if(m) votos[m[1]]=(votos[m[1]]||0)+r.probability }
+    const mejor=Object.entries(votos).sort((a,b)=>b[1]-a[1])[0];
+    return {especie:mejor&&mejor[1]>.15?mejor[0]:null, prob:mejor?mejor[1]:0, etiquetas:res.slice(0,3).map(r=>`${TRAD[r.className]||r.className.split(",")[0]} ${Math.round(r.probability*100)}%`)};
+  }
+  async function esPersona(c){
+    const bf=await Promise.race([cargarBlazeface(),esperar(8000)]); if(!bf) return false;
+    try{ const W=Math.min(640,c.width), H=Math.round(W*c.height/c.width);
+      const caras=await bf.estimateFaces(escalar(c,W,H),false);
+      return caras.some(f=>{
+        const p=Array.isArray(f.probability)?f.probability[0]:f.probability; if(!(p>.96)) return false;
+        const bw=f.bottomRight[0]-f.topLeft[0], bh=f.bottomRight[1]-f.topLeft[1]; if(bw*bh<W*H*.02) return false;
+        const L=f.landmarks; if(!L||L.length<4) return false;
+        const [ojoD,ojoI,nariz,boca]=L, dOjos=Math.abs(ojoI[0]-ojoD[0]);
+        return Math.abs(ojoI[1]-ojoD[1])<bh*.2 && dOjos>bw*.25 && dOjos<bw*.65 && nariz[1]>Math.min(ojoD[1],ojoI[1]) && boca[1]>nariz[1];
+      }) }catch{ return false }
+  }
+  /* ---------- identificar ---------- */
+  async function identificar(blob,animales,espSel,opciones={}){
+    const c=await aCanvas(blob,640);
+    const [sp,q,persona]=await Promise.all([especie(c),firmas(blob),opciones.sinPersona?false:esPersona(c)]);
+    if(persona && !(sp.especie && sp.prob>.25)) return {es_humano:true};
+    const esp=espSel||sp.especie;
+    const pool=animales.filter(a=>a.estado==="activo" && (a.firmas||[]).length && (!esp||a.especie===esp));
+    const conEmb=q[0].e!=null, base=conEmb?.6:.5;
+    const lista=pool.map(a=>{ let mejor=0, tipo=""; for(const r of a.firmas){ for(const qq of q){ const s=similitud(qq,r); if(s>mejor){ mejor=s; tipo=r.t } } } return {a,s:mejor,tipo} }).sort((x,y)=>y.s-x.s);
+    const top=lista[0], seg=lista[1];
+    const coinc=lista.slice(0,4).map((x,i)=>{
+      let conf=Math.max(0,Math.min(1,(x.s-base)/(1-base)));
+      if(i===0 && seg) conf=Math.min(1,conf+Math.max(0,(x.s-seg.s))*2); // ventaja sobre el segundo
+      return {id:x.a.id, confianza:Math.round(conf*100), motivo:`Parecido ${Math.round(x.s*100)}/100 con su foto de ${(x.tipo||"referencia").toLowerCase()} · ${x.a.firmas.length/2|0} foto${x.a.firmas.length>2?"s":""} de referencia`};
+    }).filter(x=>x.confianza>=20);
+    const sinRef=animales.filter(a=>a.estado==="activo"&&(!esp||a.especie===esp)&&!(a.firmas||[]).length).length;
+    return {
+      local:true, es_animal:true, especie:esp||sp.especie||"", especie_detectada:sp.especie, raza_probable:"", sexo_probable:"?",
+      pelaje:pelajeDe(c), coincidencias:coinc, firmaConsulta:q,
+      calidad_foto: sp.etiquetas.length?`El modelo ve: ${sp.etiquetas.join(", ")}.`:(estadoModelo==="no disponible"?"El modelo de especies no se pudo cargar (sin internet la primera vez). Se comparó solo por color y textura.":""),
+      sugerencia_foto: !pool.length? (sinRef?`Hay ${sinRef} animales sin foto de referencia: cargales una foto de perfil en su ficha para poder reconocerlos.`:"Todavía no hay animales con foto de referencia. Registrá este como nuevo.") : (coinc[0]?.confianza<60?"Probá con la misma pose que la foto de referencia (de costado, a la altura del animal) y buena luz.":"")
+    };
+  }
+
+  /* ---------- dieta por tablas ---------- */
+  const MS={"Pastura (alfalfa, festuca)":.22,"Verdeo de invierno (avena, raigrás)":.18,"Campo natural":.35,"Rollo / fardo":.86,"Silo de maíz":.35,"Silo de sorgo":.33,"Grano de maíz":.88,"Grano de sorgo":.88,"Expeller de soja":.9,"Pellet de girasol":.9,"Burlanda / DDGS":.9,"Núcleo mineral":1,"Maíz":.88,"Sorgo":.88,"Harina de soja":.89,"Afrechillo de trigo":.88,"Núcleo vitamínico-mineral":1,"Alimento balanceado comercial":.89,"Conchilla":1,"Alfalfa (fardo o pellet)":.88,"Heno de gramíneas":.87,"Pellet balanceado para conejo":.89,"Pellet para chinchilla":.89,"Avena":.88,"Afrechillo":.88};
+  const primero=(disp,lista)=>lista.find(x=>disp.includes(x));
+  function kg(x){ return x>=10?`${Math.round(x)} kg`:x>=1?`${x.toFixed(1).replace(".",",")} kg`:`${Math.round(x*1000)} g` }
+
+  function dieta(a,st,inp,ctx){
+    const {espDe,grupoDieta,cant,estado:_}=ctx; const e=espDe(a), g=grupoDieta(a.especie), pv=st.peso||e.obj*.6, n=cant(a), obj=inp.objetivo, sis=inp.sistema||"";
+    const disp=[...inp.alimentos, ...(inp.otros?inp.otros.split(/,|;/).map(s=>s.trim()).filter(Boolean):[])];
+    const R={requerimientos:[],racion:[],precauciones:[],controlar:[],alternativas:[],resultado_esperado:{}};
+    const add=(al,kgTC,nota)=>{ if(!al||kgTC<=0) return; R.racion.push({alimento:al,cantidad:kg(kgTC),total_lote:n>1?kg(kgTC*n):"",nota}) };
+    const tc=(al,msKg)=>msKg/(MS[al]||.88);
+    if(g==="rumiante"){
+      const t={"Engorde a faena":[2.6,12.5,2.6,sis.includes("feedlot")?1.3:sis.includes("suplemento")?.9:.7],"Terminación rápida":[2.7,12,2.8,1.3],"Recría (crecimiento)":[2.5,14,2.4,.6],"Gestación":[2,st.parto&&dias(hoy(),st.parto)<90?11:9,2.1,.2],"Lactancia (cría al pie)":[2.5,12,2.4,0],"Servicio / reproducción":[2.2,11,2.3,0],"Mantenimiento":[1.9,8.5,2,0],"Recuperar estado corporal":[2.3,11,2.4,.4]}[obj]||[2.2,11,2.3,.5];
+      const pc=(e===undefined)?1:(["Ovino","Caprino"].includes(a.especie)?1.35:a.especie==="Camelido"?.85:1);
+      const fg={Ovino:.25,Caprino:.2,Camelido:.3,Bubalino:.9}[a.especie]||1; t[3]=Math.round(t[3]*fg*100)/100;
+      const msd=pv*t[0]*pc/100; R.requerimientos.push({nutriente:"Materia seca",valor:`${kg(msd)}/día`},{nutriente:"Proteína bruta",valor:`${String(t[1]).replace(".",",")} % de la MS`},{nutriente:"Energía",valor:`${String(t[2]).replace(".",",")} Mcal EM/kg MS`});
+      const forr=primero(disp,["Silo de maíz","Silo de sorgo","Rollo / fardo","Pastura (alfalfa, festuca)","Verdeo de invierno (avena, raigrás)","Campo natural"])||"Rollo / fardo";
+      const gran=primero(disp,["Grano de maíz","Grano de sorgo"]), prot=primero(disp,["Expeller de soja","Pellet de girasol","Burlanda / DDGS"]);
+      const encierre=sis.includes("feedlot")||obj==="Terminación rápida";
+      let pF=encierre?.2:obj.includes("Engorde")?.7:obj==="Recría (crecimiento)"?.75:obj==="Mantenimiento"||obj==="Gestación"?1:.8;
+      let pP=t[1]>=12?(encierre?.12:.1):t[1]>=11?.06:0; if(!prot) pP=0; let pG=gran?Math.max(0,1-pF-pP-(encierre?.02:0)):0;
+      if(!gran){ pF=1-pP } else if(pG===0) pF=1-pP;
+      const pastoreo=/Pastura|Verdeo|Campo/.test(forr);
+      add(forr, pastoreo?tc(forr,msd*pF):tc(forr,msd*pF), pastoreo?"Pastoreo: asignar la parcela para que deje remanente de 5–7 cm":"En comedero, en una o dos entregas");
+      if(pG>0) add(gran, tc(gran,msd*pG), "Partido o entero (vacunos), repartido en 2 comidas");
+      if(pP>0) add(prot, tc(prot,msd*pP), "Mezclado con el grano");
+      const nuc=primero(disp,["Núcleo mineral"]); if(encierre||nuc) add(nuc||"Núcleo mineral", msd*.02, "Mezclado en la ración"+(disp.includes("Monensina")?" (con monensina)":""));
+      R.resultado_esperado={ganancia_diaria:t[3]?`${String(t[3]).replace(".",",")} kg/día aprox.`:"Mantener o mejorar la condición corporal",conversion:t[3]?`${encierre?"6–7":"8–10"} kg de MS por kg ganado`:"",dias_a_objetivo:a.pesoObjetivo&&st.peso&&t[3]?`${Math.max(0,Math.ceil((a.pesoObjetivo-st.peso)/t[3]))} días`:""};
+      R.agua=`${Math.round(pv*(a.especie==="Bovino"||a.especie==="Bubalino"?.1:.12))}–${Math.round(pv*(a.especie==="Bovino"||a.especie==="Bubalino"?.15:.18))} litros por día, limpia y fresca`;
+      R.minerales="Sal y minerales a disposición (en bateas bajo techo), con fósforo si el campo es pobre.";
+      R.transicion=pG>.3?"Aumentar el grano de a poco durante 15–21 días (empezar con 0,5% del peso vivo) para evitar acidosis.":"Cambios de alimento graduales, en 7–10 días.";
+      if(pG>.3) R.precauciones.push("Acidosis: nunca cortar la fibra ni dar grano de golpe","Comedero suficiente para que coman todos a la vez");
+      if(disp.includes("Urea")) R.precauciones.push("Urea: no más de 1% de la MS, bien mezclada, y con acostumbramiento");
+      if(obj==="Gestación") R.precauciones.push("No engordar de más en la gestación: aumenta los partos difíciles");
+      R.controlar.push("Pesar cada 30 días y comparar con la ganancia esperada","Condición corporal cada mes (escala 1 a 5)","Que sobre algo de alimento en el comedero al día siguiente");
+    } else if(g==="monogastrico"){
+      const lech=a.fechaNac&&dias(a.fechaNac,hoy())<70;
+      let cons, pb, fase;
+      if(obj==="Gestación"){ cons=pv<180?2.2:2.6; pb=13; fase="gestación" }
+      else if(obj.startsWith("Lactancia")){ const cr=(st.madre?.partos?.slice(-1)[0]?.vivos)||10; cons=2+.5*cr; pb=17; fase="lactancia" }
+      else if(lech||pv<25){ cons=Math.max(.3,pv*.05); pb=20; fase="iniciador" }
+      else if(pv<60){ cons=pv*.045; pb=18; fase="crecimiento" }
+      else { cons=Math.min(3.2,pv*.035); pb=15.5; fase="terminación" }
+      R.requerimientos.push({nutriente:"Alimento",valor:`${kg(cons)}/día`},{nutriente:"Proteína bruta",valor:`${String(pb).replace(".",",")} %`},{nutriente:"Energía",valor:"3,2–3,3 Mcal EM/kg"},{nutriente:"Lisina",valor:fase==="iniciador"?"1,3 %":fase==="crecimiento"||fase==="lactancia"?"1,0 %":fase==="gestación"?"0,55 %":"0,8 %"});
+      if(disp.includes("Alimento balanceado comercial")) add("Alimento balanceado comercial",cons,`Balanceado de ${fase}`);
+      else { const soja=primero(disp,["Harina de soja","Expeller de soja"])||"Expeller de soja", gr=primero(disp,["Maíz","Sorgo"])||"Maíz";
+        const ps=pb>=19?.3:pb>=17?.25:pb>=15?.2:.16; add(gr,cons*(1-ps-.03),"Molido fino"); add(soja,cons*ps,"Molido y mezclado"); add(primero(disp,["Núcleo vitamínico-mineral"])||"Núcleo vitamínico-mineral",cons*.03,`Núcleo para ${fase}`);
+        if(disp.includes("Afrechillo de trigo")&&fase==="gestación") R.alternativas.push("En gestación podés reemplazar 10–15% del maíz por afrechillo para dar más fibra."); }
+      R.resultado_esperado={ganancia_diaria:fase==="terminación"?"0,8–0,9 kg/día":fase==="crecimiento"?"0,7–0,8 kg/día":fase==="iniciador"?"0,35–0,5 kg/día":"",conversion:fase==="terminación"||fase==="crecimiento"?"2,6–3 kg de alimento por kg ganado":"",dias_a_objetivo:a.pesoObjetivo&&st.peso&&!["gestación","lactancia"].includes(fase)?`${Math.max(0,Math.ceil((a.pesoObjetivo-st.peso)/.8))} días`:""};
+      R.agua=fase==="lactancia"?"25–40 litros por día (bebedero de 2 L/min)":`${Math.round(Math.max(2,cons*3))}–${Math.round(Math.max(3,cons*4))} litros por día`;
+      R.minerales="Incluidos en el núcleo; no hace falta sal aparte.";
+      R.transicion="Cambiar de fase mezclando el alimento viejo y el nuevo durante 3–5 días.";
+      if(disp.includes("Suero de queso")) R.alternativas.push("Suero de queso: hasta 10–15 litros por día en terminación, reemplazando parte del maíz (1 kg de maíz ≈ 12–14 L de suero).");
+      R.precauciones.push(fase==="lactancia"?"Dar a voluntad en lactancia, en 3–4 comidas: una cerda que come poco pierde leche":"No dar comida de golpe después de ayunos: diarreas");
+      R.controlar.push("Pesar cada 2–3 semanas","Consumo real: lo que se da menos lo que sobra","Estado de la materia fecal");
+    } else if(g==="ave"){
+      const ponedora=/gallina|pava|pata|hembra/i.test(a.categoria||"")&&!/parrillero|engorde/i.test(a.categoria||"");
+      const cons=a.especie==="Codorniz"?.028:ponedora?(a.especie==="Pavo"?.3:.115):Math.max(.02,pv*(pv<.5?.12:pv<1.5?.1:.08));
+      const pb=ponedora?16.5:pv<.8?22:pv<1.8?20:18;
+      R.requerimientos.push({nutriente:"Alimento por ave",valor:`${kg(cons)}/día`},{nutriente:"Proteína bruta",valor:`${String(pb).replace(".",",")} %`},{nutriente:"Energía",valor:ponedora?"2,75 Mcal EM/kg":"3,0–3,2 Mcal EM/kg"},ponedora?{nutriente:"Calcio",valor:"3,5–4 %"}:{nutriente:"Calcio",valor:"0,9–1 %"});
+      if(disp.includes("Alimento balanceado comercial")) add("Alimento balanceado comercial",cons,ponedora?"Balanceado de postura":`Balanceado ${pb>=22?"iniciador":pb>=20?"crecimiento":"terminador"}`);
+      else { const soja=primero(disp,["Harina de soja","Expeller de soja"])||"Harina de soja", gr=primero(disp,["Maíz","Sorgo"])||"Maíz", ps=pb>=22?.36:pb>=20?.31:pb>=18?.26:.24, cal=ponedora?.09:0;
+        add(gr,cons*(1-ps-.04-cal),"Molido"); add(soja,cons*ps,"Molido y mezclado"); add("Núcleo vitamínico-mineral",cons*.04,"Específico para aves"); if(cal) add("Conchilla",cons*cal,"Aparte o mezclada, para la cáscara"); }
+      R.resultado_esperado={ganancia_diaria:ponedora?"":a.especie==="Aviar"?"50–65 g/día en parrillero":"",conversion:ponedora?"":a.especie==="Aviar"?"1,7–1,9 kg de alimento por kg (parrillero)":"",dias_a_objetivo:a.pesoObjetivo&&st.peso&&!ponedora&&a.especie==="Aviar"?`${Math.max(0,Math.ceil((a.pesoObjetivo-st.peso)/.06))} días`:""};
+      R.agua="El doble del peso del alimento consumido; siempre limpia";
+      R.minerales="Incluidos en el núcleo"+(ponedora?"; conchilla aparte para la cáscara.":".");
+      R.transicion="Cambios de alimento graduales en 3 días.";
+      R.precauciones.push("Comederos y bebederos suficientes para que coman todas a la vez","Cama seca: la humedad trae coccidiosis");
+      R.controlar.push("Pesar una muestra de 10 aves por semana","Mortandad diaria","Consumo del lote por día");
+    } else {
+      const ch=a.especie==="Chinchilla";
+      const cons=ch?.035:/lactancia/i.test(obj)?Math.min(.4,pv*.1):pv*.055;
+      R.requerimientos.push({nutriente:"Alimento",valor:`${kg(cons)}/día`},{nutriente:"Proteína bruta",valor:ch?"16–20 %":"16–18 %"},{nutriente:"Fibra",valor:ch?"alta (heno a voluntad)":"14–16 %"});
+      const pel=primero(disp,[ch?"Pellet para chinchilla":"Pellet balanceado para conejo"]);
+      if(pel) add(pel,cons,ch?"En comedero que no se vuelque":"A voluntad en lactancia");
+      else if(!ch){ add(primero(disp,["Alfalfa (fardo o pellet)"])||"Alfalfa (fardo o pellet)",cons*.45,"Picada o en pellet"); add(primero(disp,["Avena"])||"Avena",cons*.25,"Grano entero o aplastado"); add("Afrechillo",cons*.2,""); add("Expeller de soja",cons*.1,""); }
+      else add("Pellet para chinchilla",cons,"");
+      add(primero(disp,["Heno de gramíneas","Alfalfa (fardo o pellet)"])||"Heno de gramíneas", ch?.03:cons*.3, "A voluntad, siempre disponible");
+      R.resultado_esperado={ganancia_diaria:ch?"":"35–40 g/día en engorde",conversion:ch?"":"3–3,5 kg de alimento por kg",dias_a_objetivo:""};
+      R.agua=ch?"Bebedero de chupete, siempre lleno":"Bebedero de chupete; una coneja lactante toma más de 1 litro por día";
+      R.minerales=ch?"Incluidos en el pellet":"Incluidos en el balanceado; piedra de sal opcional";
+      R.transicion="Cambios en 5–7 días: los cambios bruscos causan diarreas mortales.";
+      R.precauciones.push(ch?"Nada de verdes húmedos en exceso ni golosinas: se empastan":"Evitar verdes mojados o fermentados", "Fibra siempre disponible");
+      R.controlar.push("Peso semanal","Materia fecal: bolitas firmes y parejas");
+    }
+    const gdpTxt=st.gdp!=null?`${Math.round(st.gdp*1000)} g/día`:null;
+    R.diagnostico=`${e.nombre}${a.categoria?" · "+a.categoria:""}, ${st.peso?kg(st.peso):"sin peso cargado (se usó un peso estimado de "+kg(pv)+")"}${gdpTxt?`, ganando ${gdpTxt}`:""}${st.cc?`, condición corporal ${st.cc}`:""}.${st.carencia?" Está en carencia: no enviar a faena hasta "+st.carencia.hasta+".":""} Ración calculada con tablas de requerimientos generales para ${obj.toLowerCase()}.`;
+    if(!st.peso) R.controlar.unshift("Pesar al animal: con el peso real el cálculo mejora mucho");
+    return R;
+  }
+
+  window.__local={ identificar, firmas, dieta, cargarMobilenet, cargarBlazeface, estado:()=>estadoModelo, conModelo:()=>estadoModelo==="listo" };
+  // precarga en segundo plano
+  setTimeout(()=>{ cargarMobilenet(); cargarBlazeface() },1500);
+})();
+
+</script>
+<script>
+/* ---------- constantes de manejo ---------- */
+/* ciclo: días del ciclo estral (null = ovulación inducida, sin celo cíclico) · gest: días de gestación · incub: días de incubación (aves) · tacto: días desde el servicio para diagnosticar preñez · obj: peso de faena típico (kg) */
+const ESPECIES = {
+  Bovino:{nombre:"Vacunos",ciclo:21,gest:283,tacto:35,obj:420,cats:["Ternero","Ternera","Vaquillona","Vaca","Vaca CUT (descarte)","Novillito","Novillo","Torito","Toro"],razas:["Aberdeen Angus","Hereford","Brangus","Braford","Shorthorn","Limangus","Holando Argentino","Jersey","Cruza"]},
+  Bubalino:{nombre:"Búfalos",ciclo:21,gest:310,tacto:40,obj:450,cats:["Bucerro","Bucerra","Vaquillona","Búfala","Novillo","Toro"],razas:["Mediterráneo","Murrah","Jafarabadi","Cruza"]},
+  Porcino:{nombre:"Cerdos",ciclo:21,gest:114,tacto:25,obj:110,cats:["Lechón","Cachorro (recría)","Capón","Cachorra","Cerda","Padrillo"],razas:["Large White","Landrace","Duroc","Hampshire","Pietrain","Híbrido comercial","Cruza"]},
+  Ovino:{nombre:"Ovejas",ciclo:17,gest:150,tacto:30,obj:38,cats:["Cordero","Cordera","Borrega","Oveja","Capón","Carnero"],razas:["Corriedale","Merino","Texel","Hampshire Down","Pampinta","Dorper","Cruza"]},
+  Caprino:{nombre:"Cabras",ciclo:21,gest:150,tacto:30,obj:22,cats:["Cabrito","Cabrita","Chiva","Cabra","Capón","Chivato"],razas:["Criolla","Anglo Nubian","Boer","Saanen","Cruza"]},
+  Cunicola:{nombre:"Conejos",ciclo:null,gest:31,tacto:12,obj:2.5,cats:["Gazapo","Recría","Coneja","Conejo reproductor"],razas:["Neozelandés Blanco","Californiano","Híbrido comercial","Gigante de Flandes","Cruza"]},
+  Aviar:{nombre:"Pollos y gallinas",ave:true,incub:21,obj:2.8,cats:["Pollito","Pollo parrillero","Pollona","Gallina","Gallo"],razas:["Cobb 500","Ross 308","Campero INTA","Negra INTA","Plymouth Rock","Rhode Island","Criolla"]},
+  Pavo:{nombre:"Pavos",ave:true,incub:28,obj:12,cats:["Pavito","Pavo de engorde","Pava","Pavo reproductor"],razas:["Blanco de pecho ancho","Bronceado","Criollo"]},
+  Pato:{nombre:"Patos",ave:true,incub:28,obj:3.2,cats:["Patito","Pato de engorde","Pata","Pato reproductor"],razas:["Pekín","Criollo (Muscovy)","Mulard","Cruza"]},
+  Codorniz:{nombre:"Codornices",ave:true,incub:17,obj:0.25,cats:["Pichón","Codorniz de engorde","Hembra","Macho"],razas:["Japónica","Jumbo","Cruza"]},
+  Chinchilla:{nombre:"Chinchillas",ciclo:38,gest:111,tacto:45,obj:0.6,cats:["Cría","Recría","Hembra","Macho"],razas:["Standard gris","Beige","Blanco Wilson","Ebony","Violeta"]},
+  Camelido:{nombre:"Llamas",ciclo:null,gest:345,tacto:25,obj:90,cats:["Tui","Hembra","Macho","Capón","Reproductor"],razas:["Llama","Alpaca","Cruza"]},
+  Equino:{nombre:"Caballos",ciclo:21,gest:340,tacto:16,obj:450,cats:["Potrillo","Potranca","Yegua","Caballo","Padrillo"],razas:["Criollo","Cuarto de Milla","Silla Argentino","Percherón","Cruza"]}
+};
+const HEMBRAS = /ternera|vaquillona|vaca|bucerra|búfala|cordera|borrega|oveja|cachorra|cerda|cabrita|chiva|cabra|coneja|pollona|gallina|pava|pata|potranca|yegua|hembra/i;
+/* Referencias de desempeño materno por especie: vivos por parto, supervivencia al destete, peso al nacer y al destete (kg), edad al destete (días), intervalo entre partos (días) */
+const MAD = {
+  Bovino:{vivos:1,sup:.95,nacer:35,dest:190,edadDest:180,iep:365},
+  Bubalino:{vivos:1,sup:.93,nacer:38,dest:200,edadDest:210,iep:400},
+  Porcino:{vivos:12.5,sup:.88,nacer:1.4,dest:7,edadDest:24,iep:150},
+  Ovino:{vivos:1.4,sup:.85,nacer:4.5,dest:25,edadDest:90,iep:365},
+  Caprino:{vivos:1.6,sup:.85,nacer:3.2,dest:14,edadDest:75,iep:365},
+  Cunicola:{vivos:8.5,sup:.82,nacer:.06,dest:.8,edadDest:32,iep:45},
+  Chinchilla:{vivos:2,sup:.85,nacer:.045,dest:.2,edadDest:60,iep:130},
+  Camelido:{vivos:1,sup:.9,nacer:10,dest:40,edadDest:210,iep:380},
+  Equino:{vivos:1,sup:.93,nacer:45,dest:250,edadDest:180,iep:380}
+};
+/* Condiciones del lugar de parto por especie. alo: alojamientos (m2 = superficie mínima por madre con sus crías; null = no se mide; porCria = m2 por cría, aves). tAmb: rango de temperatura ambiente para la madre. tCria.min: temperatura mínima en la zona de crías. mover: días antes del parto para tener todo listo. c:1 = imprescindible */
+const AVES_ITEMS = d=>[
+  {t:"Incubadora a 37,5–37,8 °C y 50–55% de humedad (65–70% los últimos 3 días)",c:1},
+  {t:"Volteo de huevos 3 o más veces por día, hasta 3 días antes del nacimiento",c:1},
+  {t:`Criadora encendida y estable a ${d} 24 h antes de que nazcan`,c:1},
+  {t:"Cerco alrededor de la criadora para que no se alejen del calor, sin corrientes de aire",c:1},
+  {t:"Agua tibia y alimento iniciador a disposición desde la llegada",c:1},
+  {t:"Cama de viruta seca de 5–8 cm, sin humedad",c:0},
+  {t:"Protección contra ratas, perros, gatos y aves de rapiña",c:0}];
+const MATERNIDAD = {
+  Porcino:{mover:7,alo:[{n:"Plaza de parto con jaula",m2:4.8,med:"2,7 × 1,8 m (jaula de 2,0–2,1 m de largo, ancho regulable)"},{n:"Corral de parto libre, sin jaula",m2:6.5,med:"≈ 2,6 × 2,5 m con barandas antiaplastamiento"}],
+    tAmb:[18,22],tCria:{min:30,txt:"32–34 °C en el nido de lechones al nacer, bajando a 28–30 °C al destete. Cerda: 20–22 °C al parto."},extra:"Zona de descanso de lechones cubierta y calefaccionada de 0,7–0,8 m².",
+    items:[{t:"Jaula de parto o barandas antiaplastamiento a 20–25 cm del piso y de la pared",c:1},{t:"Fuente de calor para lechones funcionando (lámpara o placa), en un rincón protegido de la cerda",c:1},{t:"Sin corrientes de aire a la altura de los lechones",c:1},{t:"Piso seco y antideslizante; rejillas sin huecos donde se traben las patas",c:1},{t:"Bebedero de la cerda con buen caudal (en lactancia toma 20–30 L por día)",c:1},{t:"Plaza lavada, desinfectada y con vacío sanitario antes del ingreso",c:0},{t:"Cerda ingresada 5–7 días antes del parto, lavada y desparasitada",c:0},{t:"Material de nido (paja o viruta) 1–2 días antes",c:0},{t:"Luz para vigilar y elementos de asistencia: guantes, lubricante, toallas, yodo",c:0}],
+    riesgo:"Las principales causas de muerte de lechones son aplastamiento, frío y hambre, casi todas en los primeros 3 días."},
+  Bovino:{mover:15,alo:[{n:"Box de parto individual",m2:16,med:"4 × 4 m como mínimo"},{n:"Corral de parto grupal",m2:10,med:"10 m² por vaca"},{n:"Potrero de parición",m2:null}],
+    tCria:{txt:"El ternero soporta el frío seco; lo peligroso es la lluvia con viento. Necesita reparo."},
+    items:[{t:"Cama seca y limpia (paja) o potrero sin barro",c:1},{t:"Reparo del viento y la lluvia (monte, cortina, galpón abierto)",c:1},{t:"Agua limpia de fácil acceso",c:1},{t:"Suelo que no resbale",c:1},{t:"Sin zanjas, pozos, alambrados caídos ni arroyos donde pueda caer el ternero",c:1},{t:"Cerca de la casa o la manga, para recorrer 2–3 veces por día y asistir",c:0},{t:"Iluminación para observar de noche (box o corral)",c:0},{t:"Elementos de parto: cadenas o sogas, guantes, yodo para el ombligo, calostro de reserva",c:0},{t:"Vaquillonas de primer parto separadas y más vigiladas",c:0}],
+    riesgo:"La mayoría de las pérdidas de terneros ocurre en el parto y las primeras 48 horas: partos difíciles, frío con lluvia y no tomar calostro en las primeras 6 horas."},
+  Ovino:{mover:7,alo:[{n:"Box de parición individual",m2:1.8,med:"1,2 × 1,5 m como mínimo"},{n:"Galpón o corral de parición grupal",m2:1.5,med:"1,5 m² por oveja más lugar para los corderos"},{n:"Potrero de parición",m2:null}],
+    tCria:{txt:"El cordero recién nacido pierde calor muy rápido: con viento y lluvia muere de hipotermia. Reparo y, con frío intenso, lámpara."},
+    items:[{t:"Reparo del viento y la lluvia (cortinas, galpón, montes)",c:1},{t:"Cama seca",c:1},{t:"Agua disponible",c:1},{t:"Controlar que el cordero mame calostro en las primeras 2 horas",c:1},{t:"Box para dejar madre y cría juntas 24–72 h y que se reconozcan",c:0},{t:"Fuente de calor o cajón de recuperación para corderos débiles o mellizos",c:0},{t:"Esquila preparto o de ojos y ubre hecha",c:0},{t:"Yodo para el ombligo y elementos de asistencia",c:0}],
+    riesgo:"Las pérdidas se concentran en los primeros 3 días: frío, hambre (madre sin leche o mellizos) y abandono."},
+  Caprino:{mover:7,alo:[{n:"Box de parto individual",m2:1.8,med:"1,2 × 1,5 m como mínimo"},{n:"Corral de parto grupal",m2:1.5,med:"1,5 m² por cabra más lugar para los cabritos"}],
+    tCria:{txt:"El cabrito sufre mucho la humedad y el frío: piso seco, a ser posible elevado, y reparo."},
+    items:[{t:"Piso seco, a ser posible elevado o de tarima; las cabras no toleran la humedad",c:1},{t:"Techo y reparo del viento",c:1},{t:"Agua disponible",c:1},{t:"Controlar que el cabrito mame calostro en las primeras 2 horas",c:1},{t:"Box para madre y cría las primeras 24–48 h",c:0},{t:"Fuente de calor para cabritos débiles o nacidos con frío",c:0},{t:"Yodo para el ombligo y elementos de asistencia",c:0}],
+    riesgo:"Frío, humedad y falta de calostro son las principales causas de muerte de cabritos."},
+  Bubalino:{mover:15,alo:[{n:"Box de parto individual",m2:16,med:"4 × 4 m como mínimo"},{n:"Potrero de parición",m2:null}],
+    tCria:{txt:"Necesita sombra y agua o barro para regular temperatura; el bucerro, reparo de lluvia y viento."},
+    items:[{t:"Sombra y agua abundante (el búfalo sufre el calor)",c:1},{t:"Reparo del viento y la lluvia para la cría",c:1},{t:"Suelo firme, sin pozos ni zanjas profundas",c:1},{t:"Recorrida 2 veces por día y acceso a manga",c:0},{t:"Yodo para el ombligo y calostro en las primeras 6 h",c:0}],
+    riesgo:"Partos difíciles y cría que no toma calostro a tiempo."},
+  Cunicola:{mover:4,alo:[{n:"Jaula de maternidad con nidal",m2:0.35,med:"≈ 90 × 40 cm más el nidal de 40 × 25 × 25 cm"}],
+    tAmb:[16,20],tCria:{min:30,txt:"El nido debe mantener unos 30 °C; el galpón, 16–20 °C. Más de 28 °C es peligroso."},
+    items:[{t:"Nidal colocado 3–4 días antes del parto (día 27–28 de gestación)",c:1},{t:"Nidal con viruta o paja limpia y seca",c:1},{t:"Sin corrientes de aire y protegido del calor",c:1},{t:"Agua permanente: una coneja sin agua puede comerse las crías",c:1},{t:"Tranquilidad: sin ruidos, perros ni manipulación los primeros días",c:0},{t:"Revisar el nido a las 24 h y sacar gazapos muertos",c:0}],
+    riesgo:"Frío en el nido, partos fuera del nidal, estrés y falta de agua causan la mayoría de las muertes de gazapos."},
+  Chinchilla:{mover:7,alo:[{n:"Jaula de maternidad",m2:0.3,med:"≈ 60 × 50 cm como mínimo"}],
+    tAmb:[15,22],tCria:{txt:"Nunca más de 25 °C: el calor es mortal para la chinchilla y sus crías."},
+    items:[{t:"Piso liso o malla de 1 cm o menos, para que las crías no caigan ni se traben",c:1},{t:"Ambiente siempre por debajo de 25 °C",c:1},{t:"Agua y heno siempre disponibles",c:1},{t:"Casita o refugio para las crías",c:0},{t:"Sacar el baño de arena hasta 7–10 días después del parto",c:0},{t:"Controlar que las crías mamen; con más de 2 puede hacer falta suplementar",c:0}],
+    riesgo:"Golpe de calor, crías que caen por la malla y falta de leche."},
+  Camelido:{mover:15,alo:[{n:"Corral o box",m2:9,med:"3 × 3 m"},{n:"Potrero de parición",m2:null}],
+    tCria:{txt:"La cría tiene poca grasa para aislarse: con frío y humedad necesita reparo o abrigo."},
+    items:[{t:"Reparo del viento y la lluvia",c:1},{t:"Suelo seco",c:1},{t:"Agua disponible",c:1},{t:"Controlar que mame calostro en las primeras 6 horas",c:1},{t:"Recorrida por la mañana: suelen parir de día",c:0}],
+    riesgo:"Hipotermia de la cría y falta de calostro."},
+  Equino:{mover:15,alo:[{n:"Box de parto",m2:16,med:"4 × 4 m como mínimo, ideal 4,5 × 4,5 m"},{n:"Potrero chico cercano",m2:null}],
+    tCria:{txt:"Box sin corrientes de aire; el potrillo debe pararse en 1 h y mamar en 2 h."},
+    items:[{t:"Cama abundante de paja (no viruta, se pega a la cría y a la yegua)",c:1},{t:"Box sin salientes, con paredes lisas y comedero alto",c:1},{t:"Agua disponible",c:1},{t:"Observación nocturna: la mayoría pare de noche",c:0},{t:"Cola vendada y ubre limpia al acercarse el parto",c:0},{t:"Elementos de asistencia, yodo y veterinario avisado",c:0}],
+    riesgo:"Distocia (es una urgencia: el parto normal dura menos de 30 minutos) y potrillo que no toma calostro."},
+  Aviar:{mover:3,alo:[{n:"Criadora de pollitos",porCria:1/35,med:"≈ 35 pollitos por m² la primera semana"},{n:"Gallina clueca",m2:null}],tCria:{min:32,txt:"32–35 °C bajo la criadora la primera semana, bajando unos 3 °C por semana hasta 21 °C."},items:AVES_ITEMS("32–35 °C"),riesgo:"El frío y la humedad de la cama en los primeros días son la principal causa de mortandad."},
+  Pavo:{mover:3,alo:[{n:"Criadora de pavitos",porCria:1/20,med:"≈ 20 pavitos por m² la primera semana"},{n:"Pava clueca",m2:null}],tCria:{min:35,txt:"35–37 °C la primera semana, bajando de a 3 °C por semana."},items:AVES_ITEMS("35–37 °C"),riesgo:"Los pavitos no encuentran solos el agua y el alimento los primeros días: ayudarlos."},
+  Pato:{mover:3,alo:[{n:"Criadora de patitos",porCria:1/25,med:"≈ 25 patitos por m² la primera semana"},{n:"Pata clueca",m2:null}],tCria:{min:30,txt:"30–32 °C la primera semana, bajando de a 3 °C por semana."},items:AVES_ITEMS("30–32 °C"),riesgo:"Se mojan fácil: bebedero que no les permita meterse y cama siempre seca."},
+  Codorniz:{mover:3,alo:[{n:"Criadora de pichones",porCria:1/100,med:"≈ 100 pichones por m² la primera semana"}],tCria:{min:35,txt:"35–37 °C la primera semana."},items:AVES_ITEMS("35–37 °C").concat([{t:"Bebederos poco profundos (con piedritas) para que no se ahoguen",c:1}]),riesgo:"Ahogamiento en bebederos y frío."}
+};
+function evalMat(a){
+  const cfg=MATERNIDAD[a.especie]; if(!cfg) return null;
+  let e=a.maternidad; const out={cfg,faltas:[]};
+  const ultPar=[...sortF(a.repro)].reverse().find(r=>r.tipo==="paricion"||r.tipo==="eclosion");
+  if(e && ultPar && ultPar.fecha>=e.fecha) e=null; // revisión de un parto anterior
+  out.e=e;
+  if(!e){ out.ok=false; out.faltas.push("Lugar de parto sin revisar"); return out }
+  const alo=cfg.alo.find(x=>x.n===e.alojamiento)||cfg.alo[0];
+  let min=alo.m2;
+  if(alo.porCria){ const inc=[...sortF(a.repro)].reverse().find(r=>r.tipo==="incubacion"); const crias=Math.round((+inc?.huevos||0)*0.85); min=crias?+(crias*alo.porCria).toFixed(2):null; out.crias=crias }
+  out.min=min; out.alo=alo;
+  if(min!=null){ if(e.m2==null) out.faltas.push("Falta medir la superficie"); else if(e.m2<min) out.faltas.push(`Espacio insuficiente: ${r1(e.m2,2)} m² de ${r1(min,2)} m² mínimos`) }
+  if(cfg.tAmb && e.tAmb!=null && (e.tAmb<cfg.tAmb[0]-1 || e.tAmb>cfg.tAmb[1]+3)) out.faltas.push(`Temperatura del ambiente ${e.tAmb} °C (recomendado ${cfg.tAmb[0]}–${cfg.tAmb[1]} °C)`);
+  if(cfg.tCria?.min && e.tCria!=null && e.tCria<cfg.tCria.min) out.faltas.push(`Zona de crías a ${e.tCria} °C (mínimo ${cfg.tCria.min} °C)`);
+  if(a.especie==="Chinchilla" && e.tAmb!=null && e.tAmb>25) out.faltas.push(`Temperatura ${e.tAmb} °C: peligro de golpe de calor`);
+  const chk=new Set(e.checks||[]);
+  cfg.items.forEach((it,i)=>{ if(it.c && !chk.has(i)) out.faltas.push(it.t) });
+  out.pend=cfg.items.filter((it,i)=>!it.c&&!chk.has(i)).length;
+  out.ok=!out.faltas.length;
+  return out;
+}
+function necesitaMat(a,st){ if(a.estado!=="activo") return false; return espDe(a).ave ? !!st.eclosion : !!st.prenada }
+const LITERA = new Set(["Porcino","Cunicola"]);
+const CAUSAS = ["Aplastamiento","Frío / hipotermia","Diarrea","Inanición / falta de leche","Rechazo de la madre","Débil al nacer","Neumonía","Depredador","Malformación","Otra / desconocida"];
+const espDe = a => ESPECIES[a.especie] || ESPECIES.Bovino;
+const cant = a => Math.max(1, +a.cantidad || 1);
+const FOTO_TIPOS = ["Perfil","Cara","Hocico","Caravana / marca","Otra"];
+const REPRO_TIPOS = {celo:"Celo",servicio:"Servicio / monta",tacto:"Diagnóstico de preñez",paricion:"Parto",baja_cria:"Muerte de cría",destete:"Destete",aborto:"Aborto",postura:"Postura",incubacion:"Inicio de incubación",eclosion:"Nacimiento (eclosión)"};
+function reproTipos(a){ const e=espDe(a);
+  if(e.ave) return ["postura","incubacion","eclosion"];
+  return (e.ciclo?["celo"]:[]).concat(["servicio","tacto","paricion","baja_cria","destete","aborto"]); }
+const num = v => v===""||v==null||isNaN(+v) ? null : +v;
+const prom = arr => { const v=arr.filter(x=>x!=null&&!isNaN(x)); return v.length? v.reduce((s,x)=>s+x,0)/v.length : null };
+const r1 = (x,d=1) => x==null?"—":(+x).toFixed(d).replace(".",",");
+const pct = x => x==null?"—":Math.round(x*100)+"%";
+function kgTxt(x){ if(x==null)return"—"; return x<1? Math.round(x*1000)+" g" : r1(x, x<10?2:x<100?1:0)+" kg" }
+function gestTxt(d,esp){ if(d==null)return"—"; return esp.gest>200? `${d} días (${r1(d/30.44)} meses)` : `${d} días` }
+
+/* Historial de partos y desempeño como madre */
+function madre(a){
+  const esp=espDe(a), B=MAD[a.especie]; if(esp.ave||!B) return null;
+  const rep=sortF(a.repro), P=rep.filter(r=>r.tipo==="paricion");
+  if(!P.length) return null;
+  const partos=P.map((p,i)=>{
+    const prevF=i?P[i-1].fecha:"0000", nextF=P[i+1]?.fecha||"9999";
+    const serv=[...rep].reverse().find(r=>r.tipo==="servicio" && r.fecha<p.fecha && r.fecha>prevF);
+    const gest=serv?dias(serv.fecha,p.fecha):null;
+    const dest=rep.find(r=>r.tipo==="destete" && r.fecha>=p.fecha && r.fecha<nextF);
+    const bajas=rep.filter(r=>r.tipo==="baja_cria" && r.fecha>=p.fecha && r.fecha<(dest?.fecha||nextF)).reduce((s,r)=>s+(+r.cantidad||1),0);
+    const tot=num(p.totales), vivos=num(p.vivos)??tot;
+    const nacer=num(p.pesoProm)??(num(p.pesoCamada)&&vivos?p.pesoCamada/vivos:null);
+    const destetados=dest? (num(dest.destetados) ?? (vivos!=null?Math.max(0,vivos-bajas+(+p.transfer||0)):null)) : null;
+    const pDest=dest? (num(dest.pesoProm)??(num(dest.pesoCamada)&&destetados?dest.pesoCamada/destetados:null)) : null;
+    const edadDest=dest?dias(p.fecha,dest.fecha):null;
+    const base=vivos!=null?vivos+(+p.transfer||0):null;
+    return {p,serv,gest,dest,bajas,tot,vivos,muertos:tot!=null&&vivos!=null?tot-vivos:null,nacer,destetados,pDest,edadDest,
+      sup: destetados!=null&&base>0? destetados/base : null,
+      gpd: pDest!=null&&nacer!=null&&edadDest>0? (pDest-nacer)/edadDest : null,
+      kgDest: pDest!=null&&destetados!=null? pDest*destetados : null,
+      iep: P[i+1]? dias(p.fecha,P[i+1].fecha) : null,
+      prematuro: gest!=null && gest<esp.gest-(esp.gest>200?12:4), tardio: gest!=null && gest>esp.gest+(esp.gest>200?12:4)};
+  });
+  const m={partos,n:partos.length,B};
+  m.tot=prom(partos.map(x=>x.tot)); m.vivos=prom(partos.map(x=>x.vivos)); m.destetados=prom(partos.map(x=>x.destetados));
+  const conD=partos.filter(x=>x.sup!=null); m.sup=conD.length? conD.reduce((s,x)=>s+x.destetados,0)/conD.reduce((s,x)=>s+x.vivos+(+x.p.transfer||0),0) : null;
+  m.nacer=prom(partos.map(x=>x.nacer)); m.pDest=prom(partos.map(x=>x.pDest)); m.edadDest=prom(partos.map(x=>x.edadDest));
+  m.gest=prom(partos.map(x=>x.gest)); m.iep=prom(partos.map(x=>x.iep)); m.gpd=prom(partos.map(x=>x.gpd));
+  m.kgParto=prom(partos.map(x=>x.kgDest));
+  m.faciles=partos.filter(x=>x.p.tipoParto).length? partos.filter(x=>x.p.tipoParto==="Normal").length/partos.filter(x=>x.p.tipoParto).length : null;
+  m.hab=prom(partos.map(x=>num(x.p.habilidad)));
+  const iepUse=m.iep||B.iep; m.partosAnio=365/iepUse;
+  m.kgAnio=m.kgParto!=null? m.kgParto*m.partosAnio : null;
+  m.kgRef=B.vivos*B.sup*B.dest*365/B.iep;
+  // puntaje: prolificidad 30, supervivencia 30, intervalo 20, habilidad/facilidad 20
+  const parts=[];
+  if(m.vivos!=null) parts.push([30,Math.min(1.15,m.vivos/B.vivos)]);
+  if(m.sup!=null) parts.push([30,Math.min(1.1,m.sup/B.sup)]);
+  if(m.iep!=null) parts.push([20,Math.min(1.1,B.iep/m.iep)]);
+  const hf=[m.hab!=null?m.hab/5:null,m.faciles].filter(x=>x!=null); if(hf.length) parts.push([20,hf.reduce((s,x)=>s+x,0)/hf.length]);
+  if(parts.length){ const w=parts.reduce((s,p)=>s+p[0],0); m.score=Math.max(0,Math.min(100,Math.round(parts.reduce((s,p)=>s+p[0]*p[1],0)/w*100))); }
+  m.verdict = m.score==null?null : m.score>=85?["ok","Excelente madre"] : m.score>=70?["ok","Buena madre"] : m.score>=55?["warn","Madre regular"] : ["crit","Evaluar reemplazo"];
+  m.preliminar = m.n<2 || m.sup==null;
+  return m;
+}
+const ALIMENTOS = {
+  rumiante:["Pastura (alfalfa, festuca)","Verdeo de invierno (avena, raigrás)","Campo natural","Rollo / fardo","Silo de maíz","Silo de sorgo","Grano de maíz","Grano de sorgo","Expeller de soja","Pellet de girasol","Burlanda / DDGS","Núcleo mineral","Urea","Monensina"],
+  monogastrico:["Maíz","Sorgo","Expeller de soja","Harina de soja","Afrechillo de trigo","Núcleo vitamínico-mineral","Suero de queso","Alimento balanceado comercial"],
+  ave:["Maíz","Sorgo","Harina de soja","Expeller de soja","Conchilla","Núcleo vitamínico-mineral","Alimento balanceado comercial","Verdes / pastoreo"],
+  herbivoro:["Alfalfa (fardo o pellet)","Heno de gramíneas","Pellet balanceado para conejo","Pellet para chinchilla","Avena","Afrechillo","Verdes frescos","Piedra de sal"]
+};
+function grupoDieta(esp){ if(ESPECIES[esp]?.ave) return "ave"; if(["Porcino"].includes(esp)) return "monogastrico"; if(["Cunicola","Chinchilla"].includes(esp)) return "herbivoro"; return "rumiante"; }
+function leerEsp(){ try{ return localStorage.getItem("cd.esp")||"" }catch{ return "" } }
+function guardarEsp(v){ try{ localStorage.setItem("cd.esp",v) }catch{} }
+const SAN_TIPOS = ["Vacuna","Antiparasitario","Antibiótico","Vitaminas/minerales","Tratamiento","Revisación","Cirugía/castración","Otro"];
+
+/* ---------- utilidades ---------- */
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+function hoy(){const d=new Date();d.setMinutes(d.getMinutes()-d.getTimezoneOffset());return d.toISOString().slice(0,10)}
+const dias = (a,b) => Math.round((Date.parse(b)-Date.parse(a))/864e5);
+function sumar(f,n){const d=new Date(f+"T12:00:00");d.setDate(d.getDate()+Math.round(n));return d.toISOString().slice(0,10)}
+function fmt(f){if(!f)return"—";const [y,m,d]=f.split("-");return `${d}/${m}/${y.slice(2)}`}
+function edadTxt(f){if(!f)return"—";const d=dias(f,hoy());if(d<0)return"—";if(d<60)return d+" días";const m=Math.floor(d/30.44);if(m<24)return m+" meses";const a=Math.floor(m/12),r=m%12;return a+" años"+(r?` ${r}m`:"")}
+function enDias(n){if(n===0)return"hoy";if(n===1)return"mañana";if(n===-1)return"ayer";return n>0?`en ${n} días`:`hace ${-n} días`}
+const sortF = arr => [...(arr||[])].sort((a,b)=>a.fecha<b.fecha?-1:a.fecha>b.fecha?1:0);
+const uid = () => Math.random().toString(36).slice(2,10);
+function toast(t){const el=$("#toast");el.textContent=t;el.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>el.hidden=true,2600)}
+const photoUrl = id => (window.__web?.fotoURL(id)) || "/_blob/"+id;
+function visibles(){ return Object.values(animals).filter(a=>!S.esp||a.especie===S.esp) }
+function esHembra(a){return a.sexo==="H" || (!a.sexo && HEMBRAS.test(a.categoria||""))}
+
+/* ---------- estado y almacenamiento ---------- */
+const S = {view:"identificar", sel:null, fichaTab:"pesadas", q:"", esp:leerEsp(), fEst:"activo", dieta:{busy:false,err:""}, id:{file:null,blob:null,url:null,res:null,busy:false,cmp:null,err:""}};
+let animals = {};
+let db=null, col=null, assets=null, sample=null, imgOK=false, ready=false;
+const chains = {};
+
+function save(a){
+  animals[a.id]=a; render();
+  if(!col){toast("Guardado solo en esta sesión");return}
+  const body=JSON.parse(JSON.stringify(a)); delete body.id;
+  chains[a.id]=(chains[a.id]||Promise.resolve()).then(()=>col.doc(a.id).set(body)).catch(e=>{
+    toast(e?.code==="quota_exceeded"?"Se llenó el almacenamiento del rodeo":e?.code==="invalid_argument"?"No tenés permiso para editar este rodeo":"No se pudo guardar, probá de nuevo");
+  });
+}
+function removeAnimal(id){
+  delete animals[id]; S.view="rodeo"; S.sel=null; render();
+  if(col) (chains[id]||Promise.resolve()).then(()=>col.doc(id).delete()).catch(()=>toast("No se pudo borrar"));
+}
+
+/* ---------- cálculos del animal ---------- */
+function estado(a){
+  const esp=espDe(a), h=hoy(), out={alerts:[]};
+  const pes=sortF(a.pesadas);
+  const last=pes[pes.length-1];
+  out.peso=last?.kg ?? null; out.fPeso=last?.fecha; out.cc=[...pes].reverse().find(p=>p.cc)?.cc ?? null;
+  if(pes.length>=2){
+    const ref = pes.filter(p=>dias(p.fecha,last.fecha)<=180 && p!==last)[0] || pes[pes.length-2];
+    const d=dias(ref.fecha,last.fecha); out.gdp = d>0 ? (last.kg-ref.kg)/d : null;
+  }
+  // sanidad / carencia
+  let car=null;
+  for(const s of a.sanidad||[]){ if(+s.carencia>0){const f=sumar(s.fecha,+s.carencia); if(f>h && (!car||f>car.hasta)) car={hasta:f,producto:s.producto}} }
+  out.carencia=car;
+  if(car) out.alerts.push({n:"warn",t:`En carencia (${car.producto||"tratamiento"}) hasta ${fmt(car.hasta)}`,f:car.hasta,k:"san"});
+  // reproducción aves: incubación
+  if(esp.ave && a.estado==="activo"){
+    const rep=sortF(a.repro), inc=[...rep].reverse().find(r=>r.tipo==="incubacion");
+    if(inc && !rep.find(r=>r.tipo==="eclosion" && r.fecha>=inc.fecha)){
+      out.eclosion=sumar(inc.fecha,esp.incub); const d=dias(h,out.eclosion);
+      if(d<=3) out.alerts.push({n:d<0?"crit":"warn",t:d<0?`Eclosión atrasada ${-d} días`:`Eclosión estimada ${enDias(d)} (${fmt(out.eclosion)})`,f:out.eclosion,k:"repro"});
+    }
+  }
+  // reproducción mamíferos
+  if(!esp.ave && esHembra(a) && a.estado==="activo"){
+    const rep=sortF(a.repro);
+    const lastPar=[...rep].reverse().find(r=>r.tipo==="paricion");
+    const desde=lastPar?.fecha||"0000";
+    const post=rep.filter(r=>r.fecha>=desde && r!==lastPar);
+    const lastTacto=[...post].reverse().find(r=>r.tipo==="tacto");
+    const abortoPost=lastTacto && post.find(r=>r.tipo==="aborto" && r.fecha>=lastTacto.fecha);
+    if(lastTacto && lastTacto.resultado==="preñada" && !abortoPost){
+      out.prenada=true;
+      const serv=[...post].reverse().find(r=>r.tipo==="servicio" && r.fecha<=lastTacto.fecha);
+      out.parto = serv ? sumar(serv.fecha,esp.gest) : (lastTacto.meses ? sumar(lastTacto.fecha, esp.gest - lastTacto.meses*30.44) : null);
+      out.base = serv ? "servicio del "+fmt(serv.fecha) : "tacto del "+fmt(lastTacto.fecha);
+      if(out.parto){const d=dias(h,out.parto);
+        if(d<0) out.alerts.push({n:"crit",t:`Parto atrasado ${-d} días (estimado ${fmt(out.parto)})`,f:out.parto,k:"repro"});
+        else if(d<=30) out.alerts.push({n:d<=10?"crit":"warn",t:`Parición estimada ${enDias(d)} (${fmt(out.parto)})`,f:out.parto,k:"repro"});
+      }
+    } else {
+      const lastServ=[...post].reverse().find(r=>r.tipo==="servicio");
+      const tactoTrasServ = lastServ && post.find(r=>r.tipo==="tacto" && r.fecha>lastServ.fecha);
+      if(lastServ && !tactoTrasServ){
+        out.servPend={fecha:lastServ.fecha, retorno:esp.ciclo?sumar(lastServ.fecha,esp.ciclo):null, tacto:sumar(lastServ.fecha,esp.tacto||30), parto:sumar(lastServ.fecha,esp.gest)};
+        const d=esp.ciclo?dias(h,out.servPend.retorno):99;
+        if(Math.abs(d)<=2) out.alerts.push({n:"celo",t:`Controlar retorno a celo ${enDias(d)} (servicio ${fmt(lastServ.fecha)})`,f:out.servPend.retorno,k:"repro"});
+        const dt=dias(h,out.servPend.tacto);
+        if(dt<=0) out.alerts.push({n:"info",t:`Pendiente tacto/ecografía (servicio ${fmt(lastServ.fecha)})`,f:out.servPend.tacto,k:"repro"});
+      }
+      const lastCelo=[...post].reverse().find(r=>r.tipo==="celo"||r.tipo==="servicio");
+      if(esp.ciclo && lastCelo && !(lastServ && !tactoTrasServ)){
+        let p=sumar(lastCelo.fecha,esp.ciclo), guard=0;
+        while(dias(p,h)>2 && guard++<40) p=sumar(p,esp.ciclo);
+        out.proxCelo=p;
+        const d=dias(h,p);
+        if(Math.abs(d)<=2) out.alerts.push({n:"celo",t:`Celo esperado ${enDias(d)} (${fmt(p)})`,f:p,k:"repro"});
+        else if(d<=5) out.alerts.push({n:"info",t:`Próximo celo ${enDias(d)} (${fmt(p)})`,f:p,k:"repro"});
+      }
+      if(lastTacto && lastTacto.resultado==="vacía") out.vacia=lastTacto.fecha;
+    }
+  }
+  // madre
+  const m=madre(a); out.madre=m;
+  if(m && a.estado==="activo"){
+    const ult=m.partos[m.partos.length-1];
+    if(!ult.dest && !out.prenada){ const e=dias(ult.p.fecha,h); if(e>=m.B.edadDest) out.alerts.push({n:"info",t:`Crías con ${e} días: momento de destetar (referencia ${m.B.edadDest} días)`,f:sumar(ult.p.fecha,m.B.edadDest),k:"repro"}) }
+    if(ult.dest && a.especie==="Porcino" && !(a.repro||[]).some(r=>r.tipo==="servicio"&&r.fecha>=ult.dest.fecha)){ const e=dias(ult.dest.fecha,h); if(e>7) out.alerts.push({n:"warn",t:`${e} días desde el destete sin servicio (lo normal es 4 a 7)`,f:sumar(ult.dest.fecha,7),k:"repro"}) }
+    if(!m.preliminar && m.score<55) out.alerts.push({n:"warn",t:`Desempeño como madre bajo (${m.score}/100): evaluar reemplazo`,f:h,k:"repro"});
+  }
+  // lugar de parto
+  if(necesitaMat(a,out)){
+    const ev=evalMat(a); out.mat=ev;
+    if(ev && !ev.ok){
+      const fp=out.parto||out.eclosion, d=fp?dias(h,fp):null, cerca=d==null||d<=ev.cfg.mover+30;
+      out.alerts.push({n:cerca?"crit":"warn",t:(ev.e?`Lugar de parto NO apto: ${ev.faltas[0]}${ev.faltas.length>1?` (+${ev.faltas.length-1})`:""}`:`Lugar de parto sin revisar`)+(d!=null?` · ${espDe(a).ave?"nacimiento":"parto"} ${enDias(d)}`:""),f:fp?sumar(fp,-ev.cfg.mover):h,k:"mat"});
+    }
+  }
+  // faena
+  if(a.pesoObjetivo && out.peso!=null && a.estado==="activo"){
+    const falta=a.pesoObjetivo-out.peso;
+    if(falta<=0){ out.faena={listo:!car}; out.alerts.push(car?{n:"warn",t:`Llegó a ${a.pesoObjetivo} kg pero está en carencia`,f:car.hasta,k:"faena"}:{n:"ok",t:`Listo para faena: ${out.peso} kg (objetivo ${a.pesoObjetivo})`,f:h,k:"faena"}) }
+    else if(out.gdp>0){ const d=Math.ceil(falta/out.gdp); out.faena={listo:false,dias:d,fecha:sumar(out.fPeso,d)} ; if(dias(h,out.faena.fecha)<=30) out.alerts.push({n:"info",t:`Llega a peso de faena cerca del ${fmt(out.faena.fecha)}`,f:out.faena.fecha,k:"faena"}) }
+    else out.faena={listo:false};
+  }
+  if(a.estado==="activo" && (!out.fPeso || dias(out.fPeso,h)>90)) out.alerts.push({n:"mute",t:out.fPeso?`Sin pesar desde ${fmt(out.fPeso)}`:"Sin pesadas registradas",f:h,k:"pesadas"});
+  return out;
+}
+
+/* ---------- render ---------- */
+function render(){
+  document.querySelectorAll(".nav button").forEach(b=>b.setAttribute("aria-current", String(b.dataset.go===S.view || (S.view==="ficha"&&b.dataset.go==="rodeo"))));
+  const cuenta={}; for(const a of Object.values(animals)) if(a.estado==="activo") cuenta[a.especie]=(cuenta[a.especie]||0)+cant(a);
+  const ordenEsp=Object.keys(ESPECIES).sort((x,y)=>(cuenta[y]||0)-(cuenta[x]||0));
+  $("#espBar").innerHTML=`<button data-esp="" aria-pressed="${!S.esp}">Todas</button>`+ordenEsp.map(k=>`<button data-esp="${k}" aria-pressed="${S.esp===k}">${ESPECIES[k].nombre}${cuenta[k]?` <span class="n">${cuenta[k]}</span>`:""}</button>`).join("");
+  const nAlert = visibles().filter(a=>a.estado==="activo").reduce((n,a)=>n+estado(a).alerts.filter(x=>x.n==="crit"||x.n==="celo").length,0);
+  $("#navBadge").innerHTML = nAlert?`<span class="badge">${nAlert}</span>`:"";
+  const v={identificar:vIdentificar,rodeo:vRodeo,alertas:vAlertas,ficha:vFicha}[S.view]||vRodeo;
+  $("#app").innerHTML=v();
+}
+
+function thumb(a,cls="thumb"){
+  const f=(a.fotos||[]).find(x=>x.tipo==="Perfil")||(a.fotos||[])[0];
+  return f?`<img class="${cls}" src="${photoUrl(f.id)}" alt="" loading="lazy">`:`<div class="${cls} ph" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg></div>`;
+}
+const tagHTML = (a,big) => a.caravana?`<span class="tag${big?" big":""}">${esc(a.caravana)}</span>`:`<span class="tag none${big?" big":""}">s/caravana</span>`;
+function chipsFor(a,st){
+  const c=[];
+  if(a.ejemplo) c.push(`<span class="chip mute">Ejemplo</span>`);
+  if(a.estado!=="activo") c.push(`<span class="chip mute">${esc(a.estado)}</span>`);
+  if(st.prenada) c.push(`<span class="chip info">Preñada</span>`);
+  if(st.vacia) c.push(`<span class="chip mute">Vacía</span>`);
+  if(st.madre?.verdict) c.push(`<span class="chip ${st.madre.verdict[0]}">${st.madre.verdict[1]} · ${st.madre.score}</span>`);
+  for(const x of st.alerts){ if(x.k==="pesadas")continue;
+    if(x.t.startsWith("Desempeño")) continue;
+    const lbl = x.k==="mat"?"Lugar de parto":x.n==="celo"?"Celo":x.k==="faena"?(x.n==="ok"?"Faena":"Faena pronto"):x.k==="san"?"Carencia":x.t.startsWith("Parto")||x.t.startsWith("Parición")?"Parición":x.t.startsWith("Pendiente")?"Tacto":x.t.startsWith("Crías")?"Destetar":x.t.includes("sin servicio")?"Sin servicio":x.t.startsWith("Eclosión")?"Eclosión":"Próx. celo";
+    c.push(`<span class="chip ${x.n}">${lbl}</span>`);
+  }
+  return c.join("");
+}
+
+/* ---- Identificar ---- */
+function vIdentificar(){
+  const I=S.id, n=Object.keys(animals).length;
+  let body=`<div class="section">
+    <div><div class="eyebrow">Paso 1</div><h2>Sacale una foto al animal</h2><p class="muted small" style="margin:.3em 0 0">${window.__local?"La app":"Claude"} compara la foto con ${S.esp?`los ${visibles().length} registros de ${ESPECIES[S.esp].nombre.toLowerCase()}`:`los ${n} registros del establecimiento`}: caravana o anillo, pelaje o plumaje, manchas, marcas y hocico.</p></div>`;
+  if(window.__web?.pideCodigo()) body+=`<form class="card row" id="fCodigo" style="gap:8px"><label for="codigoIn" class="small" style="font-weight:600;flex:1 1 100%">Código de acceso para usar la IA</label><input id="codigoIn" type="password" autocomplete="off" style="flex:1 1 160px" placeholder="Te lo pasa el administrador"><button class="btn primary">Guardar</button></form>`;
+  if(window.__local){}
+  else if(sample===null && ready) body+=`<div class="banner warn">La identificación por foto no está disponible en esta vista. Podés buscar el animal en Rodeo.</div>`;
+  else if(ready && !imgOK) body+=`<div class="banner warn">Esta vista no permite enviar fotos a Claude. Probá desde claude.ai en el navegador o la app actualizada.</div>`;
+  body+=`<div class="capture">
+      <label for="camIn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>Sacar foto<input id="camIn" type="file" accept="image/*" capture="environment"></label>
+      <label for="galIn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="m3 16 5-5 5 5 3-3 5 5"/></svg>Elegir de la galería<input id="galIn" type="file" accept="image/*"></label>
+    </div>
+    <details class="guide card"><summary>Qué foto sirve más para identificar</summary><ul class="small">
+      <li><b>Caravana legible</b>: es la forma más segura. Acercate hasta que se lean los números.</li>
+      <li><b>Hocico en primer plano</b>: las líneas del hocico son únicas en cada animal, como una huella digital. Foto de frente, con luz pareja y el hocico limpio.</li>
+      <li><b>Perfil completo</b>, de costado y a la altura del animal: muestra pelaje, manchas, marca a fuego y estado corporal.</li>
+      <li><b>Cara de frente</b>: sirve para razas con manchas (Hereford, Holando, cruzas).</li>
+      <li>Cargá esas mismas fotos en la ficha de cada animal: cuantas más referencias haya, mejor compara.</li>
+      ${window.__local?`<li><b>La primera foto de cada animal es su referencia.</b> Registralo como nuevo y, cada vez que confirmes “Es este”, la app aprende y lo reconoce mejor.</li>`:""}
+    </ul></details>`;
+  if(I.url){
+    body+=`<div class="card stack"><div class="preview"><img src="${I.url}" alt="Foto a identificar"><div class="stack">
+      <div><div class="eyebrow">Paso 2</div><h3>Buscar en el rodeo</h3></div>
+      <div class="row"><button class="btn primary" id="btnAnalizar" ${I.busy||!iaOK()?"disabled":""}>${I.busy?'<span class="spin"></span> Analizando…':"Identificar animal"}</button>
+      <button class="btn ghost" id="btnLimpiar">Otra foto</button></div>
+      ${I.busy?`<p class="muted small" style="margin:0">${window.__local?"La primera vez descarga el modelo de reconocimiento (unos 14 MB); después funciona sin internet.":"Suele tardar entre 10 y 40 segundos."}</p>`:""}
+      ${I.err?`<div class="banner warn">${esc(I.err)}</div>`:""}
+    </div></div></div>`;
+  }
+  if(I.res) body+=resultado(I.res);
+  return body+`</div>`;
+}
+const BURRO = {
+  nombres:["Equus asinus estudiantis","Asinus recreoensis","Burrus tareaolvidadus","Equus asinus celularis"],
+  habitat:["El fondo del aula, cerca del enchufe","La fila del kiosco en el recreo","Cualquier lugar con wifi","El banco de al lado de la ventana"],
+  alim:["Galletitas, gaseosa y alfajores del kiosco","Papas fritas y mate cocido","Lo que haya en la mochila del compañero","Snacks de dudosa procedencia"],
+  conducta:["Rebuzna cuando el profe toma lista","Se activa cuando suena el timbre del recreo","Pasa horas mirando una pantalla chiquita","Duerme de pie en la primera hora"],
+  rec:["Dormir 8 horas y hacer la tarea: la evolución no se hace sola","Dejar el celular y agarrar un libro de vez en cuando","Tomar agua, comer fruta y estudiar para la prueba","Seguir asistiendo a clase: vas muy bien, faltan unas generaciones"]
+};
+const pick = arr => arr[Math.floor(Math.random()*arr.length)];
+function resultadoHumano(){
+  const r=S.id.burro || (S.id.burro={n:pick(BURRO.nombres),h:pick(BURRO.habitat),a:pick(BURRO.alim),c:pick(BURRO.conducta),e:pick(BURRO.rec),ev:20+Math.floor(Math.random()*60)});
+  return `<div class="card stack burro"><div><div class="eyebrow">Resultado · especie detectada</div><h3>Burro/a en estado de evolución</h3><p class="muted small" style="margin:.3em 0 0">Espécimen poco frecuente en el campo. Suele verse en escuelas agrotécnicas.</p></div>
+  <dl class="kv">
+    <dt>Nombre científico</dt><dd><i>${esc(r.n)}</i></dd>
+    <dt>Hábitat</dt><dd>${esc(r.h)}</dd>
+    <dt>Alimentación</dt><dd>${esc(r.a)}</dd>
+    <dt>Conducta</dt><dd>${esc(r.c)}</dd>
+    <dt>Evolución</dt><dd><div class="row" style="gap:8px"><div class="meter" style="width:120px"><span style="width:${r.ev}%"></span></div><span class="num small">${r.ev}%</span></div></dd>
+    <dt>Aptitud para faena</dt><dd>Ninguna. Protegido por el reglamento escolar.</dd>
+    <dt>Recomendación</dt><dd>${esc(r.e)}</dd>
+  </dl>
+  <p class="small muted" style="margin:0">Es un chiste: la foto no se guarda en ningún lado. Para identificar un animal de verdad, sacale la foto a una vaca, un chancho o una gallina.</p>
+  <div class="row"><button class="btn" id="btnOtroBurro">Otra ficha</button><button class="btn ghost" id="btnLimpiar2">Probar con un animal</button>${window.__local?`<button class="btn ghost" id="btnNoPersona">No es una persona</button>`:""}</div></div>`;
+}
+function iaOK(){ return !!window.__local || (!!sample && imgOK) }
+function resultado(r){
+  if(r.es_humano) return resultadoHumano();
+  const coinc=(r.coincidencias||[]).filter(c=>animals[c.id]).sort((a,b)=>b.confianza-a.confianza);
+  const I=S.id;
+  let h=`<div class="card stack"><div><div class="eyebrow">Resultado</div><h3>${r.es_animal===false?"No se reconoce un animal en la foto":esc([ESPECIES[r.especie]?.nombre||r.especie,r.raza_probable].filter(Boolean).join(" · ")||"Animal")}</h3></div>`;
+  if(r.es_animal!==false){
+    h+=`<dl class="kv">
+      ${r.caravana_leida?`<dt>Caravana leída</dt><dd><span class="tag">${esc(r.caravana_leida)}</span></dd>`:""}
+      <dt>Sexo / categoría</dt><dd>${esc({H:"Hembra",M:"Macho"}[r.sexo_probable]||"No se distingue")}${r.categoria_probable?" · "+esc(r.categoria_probable):""}</dd>
+      <dt>Pelaje</dt><dd>${esc(r.pelaje||"—")}</dd>
+      ${r.senas_visibles?`<dt>Señas</dt><dd>${esc(r.senas_visibles)}</dd>`:""}
+      ${r.edad_estimada?`<dt>Edad estimada</dt><dd>${esc(r.edad_estimada)}</dd>`:""}
+      ${r.condicion_corporal?`<dt>Condición corporal</dt><dd class="num">${esc(r.condicion_corporal)} / 5</dd>`:""}
+      ${r.observaciones_salud?`<dt>A revisar</dt><dd>${esc(r.observaciones_salud)}</dd>`:""}
+      ${r.calidad_foto?`<dt>Foto</dt><dd class="muted">${esc(r.calidad_foto)}</dd>`:""}
+    </dl>`;
+  }
+  if(coinc.length){
+    h+=`<div class="stack" style="gap:8px"><div class="eyebrow">Posibles coincidencias en tu rodeo</div>`;
+    for(const c of coinc.slice(0,4)){const a=animals[c.id];
+      h+=`<div class="match">${thumb(a)}<div><div class="row" style="gap:8px">${tagHTML(a)}<b>${esc(a.nombre||"")}</b></div><div class="small muted">${esc(c.motivo||"")}</div></div>
+      <div class="stack" style="gap:6px;align-items:flex-end"><span class="num small">${Math.round(c.confianza)}%</span><div class="meter"><span style="width:${Math.max(4,Math.min(100,c.confianza))}%"></span></div><button class="btn sm primary" data-open="${a.id}" data-confirm="1">Es este</button></div></div>`;
+    }
+    const conFoto=coinc.filter(c=>(animals[c.id].fotos||[]).length);
+    if(conFoto.length && !I.cmp && !r.local) h+=`<button class="btn" id="btnComparar" ${I.busy?"disabled":""}>Comparar la foto con las fotos guardadas de estos candidatos</button>`;
+    if(I.cmp) h+=`<div class="banner info">${I.cmp.id&&animals[I.cmp.id]?`Comparando fotos, el más parecido es <b>${esc(animals[I.cmp.id].caravana||animals[I.cmp.id].nombre)}</b> (${Math.round(I.cmp.confianza)}%). `:"Comparando fotos no hay un candidato claro. "}${esc(I.cmp.motivo||"")}</div>`;
+    h+=`</div>`;
+  } else if(r.es_animal!==false){
+    h+=`<p class="muted small" style="margin:0">No encontré un animal del rodeo que coincida${r.local?". Si es uno nuevo, registralo: esta foto queda como su referencia":""}.</p>`;
+  }
+  if(r.sugerencia_foto) h+=`<p class="small muted" style="margin:0">Para mejorar: ${esc(r.sugerencia_foto)}</p>`;
+  if(r.es_animal!==false) h+=`<div class="row"><button class="btn" id="btnNuevoDesdeFoto">Registrar como animal nuevo</button></div>`;
+  return h+`</div>`;
+}
+
+async function shrink(file,max=1600){
+  try{
+    const url=URL.createObjectURL(file), img=new Image();
+    await new Promise((ok,ko)=>{img.onload=ok;img.onerror=ko;img.src=url});
+    const s=Math.min(1,max/Math.max(img.naturalWidth,img.naturalHeight));
+    const c=document.createElement("canvas");c.width=Math.round(img.naturalWidth*s);c.height=Math.round(img.naturalHeight*s);
+    c.getContext("2d").drawImage(img,0,0,c.width,c.height);URL.revokeObjectURL(url);
+    return await new Promise(r=>c.toBlob(b=>r(b||file),"image/jpeg",.85));
+  }catch{return file}
+}
+
+function resumenRodeo(){
+  return visibles().filter(a=>a.estado==="activo").slice(0,300).map(a=>{
+    const st=estado(a);
+    return [a.id,a.caravana||"-",a.nombre||"-",a.especie,a.raza||"-",a.sexo||"-",a.categoria||"-",edadTxt(a.fechaNac),a.pelaje||"-",a.senas||"-",st.peso?st.peso+"kg":"-"].join(" | ");
+  }).join("\n").slice(0,40000);
+}
+async function identificar(){
+  const I=S.id; I.busy=true; I.err=""; I.res=null; I.cmp=null; I.burro=null; render();
+  if(window.__local){
+    try{ I.res=await window.__local.identificar(I.blob,Object.values(animals),S.esp,{sinPersona:I.sinPersona}) }
+    catch(e){ console.error(e); I.err="No se pudo analizar la foto. Probá con otra." }
+    I.busy=false; render(); return;
+  }
+  const prompt=`Sos un asistente de un establecimiento ganadero en Argentina. La imagen adjunta es una foto de un animal tomada en el campo con un celular.${S.esp?` El productor indicó que es de la especie ${S.esp} (${ESPECIES[S.esp].nombre}).`:""}
+0) Si la foto muestra principalmente una PERSONA (una selfie, una cara, gente) y no un animal de producción, respondé solamente {"es_humano":true} y nada más: no describas a la persona.
+1) Describí el animal: especie, raza probable, sexo, categoría (ternero, vaquillona, vaca, novillo, toro, etc.), pelaje, señas particulares (manchas, marca a fuego, señal de oreja, cuernos), edad aproximada, condición corporal 1-5 si se puede estimar, y cualquier signo visible que convenga revisar (renguera, heridas, ojos, diarrea, flacura). No inventes lo que no se ve.
+2) Si se ve una caravana, transcribí el número exacto.
+3) Comparalo con el rodeo registrado (una línea por animal: id | caravana | nombre | especie | raza | sexo | categoría | edad | pelaje | señas | último peso). La caravana leída es la evidencia más fuerte; si no hay, usá especie, raza, sexo, pelaje y señas. Devolvé solo candidatos plausibles con confianza 0-100 (máximo 4). Si nada coincide, lista vacía.
+
+RODEO:
+${resumenRodeo()||"(sin animales registrados)"}
+
+Respondé solo con JSON con esta forma:
+{"es_animal":true,"especie":"una de: ${Object.keys(ESPECIES).join("|")} (Bubalino=búfalo, Cunicola=conejo, Aviar=pollo o gallina, Camelido=llama o alpaca) u otra","raza_probable":"","sexo_probable":"H|M|?","categoria_probable":"","pelaje":"","senas_visibles":"","caravana_leida":null,"edad_estimada":"","condicion_corporal":null,"observaciones_salud":"","calidad_foto":"","sugerencia_foto":"","coincidencias":[{"id":"","confianza":0,"motivo":""}]}
+Escribí los textos en español rioplatense, breves.`;
+  try{ I.res = await sample.json(prompt,{images:[I.blob]}); }
+  catch(e){ I.err=errTxt(e); }
+  I.busy=false; render();
+}
+async function comparar(){
+  const I=S.id, max=(await sample.limits().catch(()=>null))?.images?.maxCount||1;
+  const cands=(I.res.coincidencias||[]).filter(c=>animals[c.id]&&(animals[c.id].fotos||[]).length).sort((a,b)=>b.confianza-a.confianza).slice(0,Math.max(0,Math.min(4,max-1)));
+  if(!cands.length){toast("Esta vista solo permite enviar una foto por vez");return}
+  I.busy=true; render();
+  try{
+    const blobs=[I.blob], etiquetas=[];
+    for(const c of cands){const a=animals[c.id];const f=a.fotos.find(x=>x.tipo==="Hocico")||a.fotos.find(x=>x.tipo==="Perfil")||a.fotos[0];
+      const b=await fetch(photoUrl(f.id)).then(r=>r.ok?r.blob():null).catch(()=>null);
+      if(b){blobs.push(b);etiquetas.push(`Imagen ${blobs.length}: id ${a.id}, caravana ${a.caravana||"-"}, foto de ${f.tipo}`)}}
+    if(blobs.length<2) throw {code:"sin_fotos"};
+    I.cmp = await sample.json(`La imagen 1 es un animal sin identificar. Las siguientes son fotos de referencia de animales del rodeo:
+${etiquetas.join("\n")}
+Compará pelaje, manchas, marcas, forma de cuernos y orejas, y si hay fotos de hocico, el patrón de líneas del hocico. ¿Cuál es el mismo animal que la imagen 1? Si ninguno, id null.
+Respondé solo JSON: {"id":"id o null","confianza":0,"motivo":"breve, en español"}`,{images:blobs});
+  }catch(e){ I.err = e?.code==="sin_fotos"?"No pude abrir las fotos guardadas de los candidatos.":errTxt(e) }
+  I.busy=false; render();
+}
+function errTxt(e){
+  return ({codigo:"Falta el código de acceso o es incorrecto. Cargalo arriba.",sin_clave:"El servidor no tiene configurada la clave de la IA.",not_granted:"No se dio permiso para usar Claude en esta página.",rate_limited:"Se alcanzó el límite de uso por ahora. Probá en un rato.",image_rejected:"La foto no se pudo leer. Probá con otra en JPG o PNG.",images_unavailable:"Esta vista no permite enviar fotos.",invalid_json:"La respuesta vino incompleta. Probá de nuevo.",session_expired:"Tenés que volver a iniciar sesión.",refused:"No se pudo analizar esta foto."})[e?.code]||"No se pudo analizar la foto. Probá de nuevo.";
+}
+
+/* ---- Rodeo ---- */
+function vRodeo(){
+  const all=visibles();
+  const act=all.filter(a=>a.estado==="activo");
+  const sts=Object.fromEntries(all.map(a=>[a.id,estado(a)]));
+  const q=S.q.toLowerCase();
+  const list=all.filter(a=>(!S.fEst||a.estado===S.fEst)&&(!q||[a.caravana,a.caravanaSenasa,a.nombre,a.raza,a.categoria,a.pelaje,a.lote].join(" ").toLowerCase().includes(q)))
+    .sort((a,b)=>(a.caravana||"~").localeCompare(b.caravana||"~",undefined,{numeric:true}));
+  const pren=act.filter(a=>sts[a.id].prenada).length, faena=act.filter(a=>sts[a.id].faena?.listo).length, celo=act.filter(a=>sts[a.id].alerts.some(x=>x.n==="celo")).length;
+  const cabezas=act.reduce((n,a)=>n+cant(a),0);
+  let h=`<div class="section">
+  <div><h2>${S.esp?ESPECIES[S.esp].nombre:"Todo el establecimiento"}</h2></div>
+  <div class="summary"><div><b>${cabezas}</b><span>Cabezas activas${cabezas!==act.length?` (${act.length} fichas)`:""}</span></div><div><b>${pren}</b><span>Preñadas</span></div><div><b>${celo}</b><span>Celo a controlar</span></div><div><b>${faena}</b><span>Listos faena</span></div></div>
+  <div class="toolbar"><input id="q" type="search" placeholder="Buscar caravana, nombre, raza, lote…" value="${esc(S.q)}">
+  <select id="fEst">${[["activo","Activos"],["","Todos"],["vendido","Vendidos"],["faenado","Faenados"],["muerto","Muertos"]].map(([v,t])=>`<option value="${v}" ${S.fEst===v?"selected":""}>${t}</option>`).join("")}</select></div>`;
+  h+=`<div class="tabs" role="tablist"><button role="tab" data-modo="lista" aria-selected="${S.modo!=="madres"}">Animales</button><button role="tab" data-modo="madres" aria-selected="${S.modo==="madres"}">Ranking de madres</button></div>`;
+  if(S.modo==="madres") return h+rankingMadres(list,sts)+`</div>`;
+  if(all.some(a=>a.ejemplo)) h+=`<div class="banner info row" style="justify-content:space-between">Los animales marcados “Ejemplo” están para que veas cómo funciona. <button class="btn sm" id="btnBorrarEj">Borrar ejemplos</button></div>`;
+  if(!list.length) h+=`<div class="list"><div class="empty">${all.length?"Ningún animal coincide con el filtro.":S.esp?`No hay ${ESPECIES[S.esp].nombre.toLowerCase()} cargados. Tocá “Nuevo animal”.`:"Todavía no cargaste animales. Tocá “Nuevo animal”."}</div></div>`;
+  else h+=`<div class="list">${list.map(a=>{const st=sts[a.id];return `<button class="item" data-open="${a.id}">${thumb(a)}
+    <div><div class="l1">${tagHTML(a)}<span class="name">${esc(a.nombre||"")}</span></div><div class="small muted">${esc([S.esp?"":espDe(a).nombre,a.raza,a.categoria,cant(a)>1?`lote de ${cant(a)}`:"",edadTxt(a.fechaNac)].filter(x=>x&&x!=="—").join(" · "))}</div><div class="chips" style="margin-top:4px">${chipsFor(a,st)}</div></div>
+    <div class="r"><span class="num">${st.peso!=null?st.peso+" kg":"—"}</span>${st.gdp!=null?`<span class="small muted num">${st.gdp>=0?"+":""}${(st.gdp*1000).toFixed(0)} g/d</span>`:""}</div></button>`}).join("")}</div>`;
+  if(window.__web) h+=`<div class="card stack" style="gap:8px"><h3>Copia de seguridad</h3><p class="small muted" style="margin:0">Los datos quedan guardados en este dispositivo. Exportá una copia seguido y usala para pasar el rodeo a otro celular.</p><div class="row"><button class="btn sm" id="btnExport">Exportar copia</button><label class="btn sm" for="impIn">Importar copia<input id="impIn" type="file" accept="application/json,.json" style="position:absolute;width:1px;height:1px;opacity:0"></label></div></div>`;
+  return h+`</div>`;
+}
+
+function rankingMadres(list,sts){
+  const ms=list.filter(a=>sts[a.id].madre).sort((p,q)=>(sts[q.id].madre.score??-1)-(sts[p.id].madre.score??-1));
+  const sinPartos=list.filter(a=>esHembra(a)&&!espDe(a).ave&&!sts[a.id].madre&&!/ternera|bucerra|cordera|cabrita|cachorra|potranca|cría/i.test(a.categoria||"")).length;
+  if(!ms.length) return `<div class="card empty">Todavía no hay partos registrados. En la ficha de cada hembra, en Reproducción, cargá el parto con nacidos, vivos y pesos, y después el destete.</div>`;
+  const bajo=ms.filter(a=>{const m=sts[a.id].madre;return !m.preliminar&&m.score<55});
+  return `<p class="small muted" style="margin:0">Nota de 0 a 100: crías nacidas vivas (30%), supervivencia al destete (30%), intervalo entre partos (20%), habilidad materna y facilidad de parto (20%), comparadas con la referencia de cada especie.${sinPartos?` Hay ${sinPartos} hembras adultas sin partos registrados.`:""}</p>
+  ${bajo.length?`<div class="banner warn">${bajo.length} madre${bajo.length>1?"s":""} con nota menor a 55 y al menos 2 partos: candidatas a reemplazo.</div>`:""}
+  <div class="card tbl" style="padding:0"><table class="ration"><thead><tr><th>Madre</th><th>Nota</th><th>Partos</th><th>Vivos/parto</th><th>Superv.</th><th>Intervalo</th><th>Kg dest./año</th></tr></thead><tbody>
+  ${ms.map(a=>{const m=sts[a.id].madre;return `<tr data-open="${a.id}" style="cursor:pointer"><td>${tagHTML(a)} <span class="small">${esc(a.nombre||"")}</span>${S.esp?"":`<div class="small muted">${esc(espDe(a).nombre)}</div>`}</td><td>${m.verdict?`<span class="chip ${m.verdict[0]}">${m.score}</span>`:"—"}${m.preliminar?' <span class="small muted">prelim.</span>':""}</td><td class="q">${m.n}</td><td class="q">${r1(m.vivos)}</td><td class="q">${pct(m.sup)}</td><td class="q">${m.iep?Math.round(m.iep)+"d":"—"}</td><td class="q">${kgTxt(m.kgAnio)}</td></tr>`}).join("")}
+  </tbody></table></div>`;
+}
+
+/* ---- Agenda ---- */
+function vAlertas(){
+  const items=[];
+  for(const a of visibles()) if(a.estado==="activo") for(const x of estado(a).alerts) items.push({...x,a});
+  const orden={crit:0,celo:1,warn:2,info:3,ok:4,mute:5};
+  items.sort((p,q)=>orden[p.n]-orden[q.n]||(p.f<q.f?-1:1));
+  const grupos=[["Urgente",x=>x.n==="crit"],["Celos a controlar",x=>x.n==="celo"],["Atención",x=>x.n==="warn"],["Próximos días",x=>x.n==="info"],["Listos para faena",x=>x.n==="ok"],["Pesadas atrasadas",x=>x.n==="mute"]];
+  let h=`<div class="section"><div><h2>Agenda del rodeo</h2><p class="muted small" style="margin:.3em 0 0">${(()=>{const e=S.esp&&ESPECIES[S.esp];if(!e)return "Calculada con los registros y los parámetros de cada especie: ciclo estral, gestación o incubación, carencias y ganancia diaria entre pesadas.";return e.ave?`${e.nombre}: incubación de ${e.incub} días, carencias y ganancia diaria entre pesadas.`:`${e.nombre}: ${e.ciclo?`celo cada ${e.ciclo} días`:"ovulación inducida (sin celo cíclico)"}, gestación de ${e.gest} días, diagnóstico de preñez a los ${e.tacto} días del servicio.`})()}</p></div>`;
+  if(!items.length) h+=`<div class="card empty">No hay nada pendiente.</div>`;
+  for(const [t,fn] of grupos){const g=items.filter(fn); if(!g.length)continue;
+    h+=`<div class="alert-group"><div class="eyebrow">${t} · ${g.length}</div><div class="list">${g.map(x=>`<button class="item" data-open="${x.a.id}" data-tab="${x.k}">${thumb(x.a)}<div><div class="l1">${tagHTML(x.a)}<span class="name">${esc(x.a.nombre||"")}</span></div><div class="small">${esc(x.t)}</div></div><span class="chip ${x.n}">${fmt(x.f)}</span></button>`).join("")}</div></div>`;
+  }
+  return h+`</div>`;
+}
+
+/* ---- Ficha ---- */
+function vFicha(){
+  const a=animals[S.sel]; if(!a){S.view="rodeo";return vRodeo()}
+  const st=estado(a), esp=espDe(a);
+  const f=(a.fotos||[]).find(x=>x.tipo==="Perfil")||(a.fotos||[])[0];
+  let h=`<div class="section">
+  <div><button class="btn ghost sm" data-go="rodeo">← Rodeo</button></div>
+  <div class="hero">${f?`<img class="pic" src="${photoUrl(f.id)}" alt="">`:`<div class="pic">Sin foto</div>`}
+    <div class="stack" style="gap:10px"><div class="row">${tagHTML(a,true)}<div><h2>${esc(a.nombre||a.categoria||"Sin nombre")}</h2><div class="muted small">${esc([esp.nombre,a.raza,a.categoria,a.sexo==="H"?"Hembra":a.sexo==="M"?"Macho":"",cant(a)>1?`lote de ${cant(a)} cabezas (peso promedio)`:""].filter(Boolean).join(" · "))}</div></div></div>
+    <div class="chips">${chipsFor(a,st)}</div>
+    <div class="row"><button class="btn sm" id="btnEditar">Editar datos</button><button class="btn sm" id="btnFoto">Agregar foto</button></div></div></div>
+  <div class="stats">
+    <div><span>Edad</span><b>${edadTxt(a.fechaNac)}</b></div>
+    <div><span>Peso</span><b>${st.peso!=null?st.peso+" kg":"—"}</b></div>
+    <div><span>Ganancia</span><b>${st.gdp!=null?(st.gdp*1000).toFixed(0)+" g/d":"—"}</b></div>
+    <div><span>Cond. corporal</span><b>${st.cc??"—"}</b></div>
+  </div>
+  ${matBlock(a,st)}
+  <div class="panels">${panelRepro(a,st,esp)}${panelFaena(a,st)}${panelSan(st)}</div>
+  <dl class="kv card">
+    <dt>Caravana SENASA</dt><dd class="num">${esc(a.caravanaSenasa||"—")}</dd>
+    <dt>Nacimiento</dt><dd>${fmt(a.fechaNac)}</dd>
+    <dt>Madre / Padre</dt><dd>${esc(a.madre||"—")} / ${esc(a.padre||"—")}</dd>
+    <dt>Pelaje</dt><dd>${esc(a.pelaje||"—")}</dd>
+    <dt>Señas</dt><dd>${esc(a.senas||"—")}</dd>
+    <dt>Origen</dt><dd>${esc(a.origen||"—")}</dd>
+    <dt>Potrero / lote</dt><dd>${esc(a.lote||"—")}</dd>
+    <dt>Estado</dt><dd>${esc(a.estado)}</dd>
+  </dl>
+  <div class="tabs" role="tablist">${[["pesadas","Pesadas"],["dieta","Dieta"],["repro","Reproducción"],["san","Sanidad"],["notas","Notas"],["fotos","Fotos"]].map(([k,t])=>`<button role="tab" data-ftab="${k}" aria-selected="${S.fichaTab===k}">${t}</button>`).join("")}</div>
+  ${tabFicha(a,st)}
+  <div class="row" style="justify-content:flex-end;padding-top:10px"><button class="btn sm danger" id="btnBorrar">${S.confirmDel===a.id?"Tocá de nuevo para borrar definitivamente":"Borrar animal"}</button></div>
+  </div>`;
+  return h;
+}
+function panelRepro(a,st,esp){
+  if(esp.ave){
+    if(st.eclosion) return `<div class="panel s-info"><h3>En incubación</h3><p>Nacimiento estimado <b class="num">${fmt(st.eclosion)}</b> (${enDias(dias(hoy(),st.eclosion))}).</p><p class="muted small">${esp.incub} días de incubación.</p></div>`;
+    const p=[...sortF(a.repro)].reverse().find(r=>r.tipo==="postura");
+    return `<div class="panel s-mute"><h3>Postura e incubación</h3><p class="muted">${p?`Última postura registrada ${fmt(p.fecha)}${p.detalle?": "+esc(p.detalle):""}.`:`Registrá postura o el inicio de una incubación (${esp.incub} días).`}</p></div>`;
+  }
+  if(!esHembra(a)) return `<div class="panel s-mute"><h3>Reproducción</h3><p class="muted">Macho${a.categoria?" ("+esc(a.categoria)+")":""}.</p></div>`;
+  if(st.prenada) return `<div class="panel s-info"><h3>Preñada</h3><p>Parto estimado <b class="num">${fmt(st.parto)}</b>${st.parto?` (${enDias(dias(hoy(),st.parto))})`:""}.</p><p class="muted small">Según ${esc(st.base)} y ${esp.gest} días de gestación.</p></div>`;
+  if(st.servPend) return `<div class="panel s-celo"><h3>Servida el ${fmt(st.servPend.fecha)}</h3><p>${st.servPend.retorno?`Controlar retorno a celo el <b class="num">${fmt(st.servPend.retorno)}</b>. `:""}Diagnóstico de preñez desde el <b class="num">${fmt(st.servPend.tacto)}</b>. Si quedó preñada, pare cerca del <b class="num">${fmt(st.servPend.parto)}</b>.</p></div>`;
+  if(!esp.ciclo) return `<div class="panel s-mute"><h3>Reproducción</h3><p class="muted">Especie de ovulación inducida: no tiene celo cíclico. Registrá el servicio para calcular diagnóstico y parto (${esp.gest} días).</p></div>`;
+  if(st.proxCelo) return `<div class="panel s-celo"><h3>Próximo celo</h3><p><b class="num">${fmt(st.proxCelo)}</b> (${enDias(dias(hoy(),st.proxCelo))}).</p><p class="muted small">Ciclo de ${esp.ciclo} días desde el último celo registrado.</p></div>`;
+  return `<div class="panel s-mute"><h3>Reproducción</h3><p class="muted">Registrá un celo o servicio para calcular el próximo.</p></div>`;
+}
+function panelFaena(a,st){
+  if(!a.pesoObjetivo) return `<div class="panel s-mute"><h3>Faena</h3><p class="muted">Cargá un peso objetivo en “Editar datos” para estimar la fecha.</p></div>`;
+  if(st.faena?.listo) return `<div class="panel s-ok"><h3>Listo para faena</h3><p>${st.peso} kg, objetivo ${a.pesoObjetivo} kg. Sin carencia activa.</p></div>`;
+  if(st.peso!=null && st.peso>=a.pesoObjetivo) return `<div class="panel s-warn"><h3>En peso, con carencia</h3><p>No enviar a faena antes del <b class="num">${fmt(st.carencia.hasta)}</b>.</p></div>`;
+  if(st.faena?.fecha) return `<div class="panel s-info"><h3>Faena estimada</h3><p><b class="num">${fmt(st.faena.fecha)}</b>. Faltan ${Math.round(a.pesoObjetivo-st.peso)} kg a ${(st.gdp*1000).toFixed(0)} g/día.</p></div>`;
+  return `<div class="panel s-mute"><h3>Faena</h3><p class="muted">Objetivo ${a.pesoObjetivo} kg. Hacen falta dos pesadas para calcular la ganancia diaria.</p></div>`;
+}
+function panelSan(st){
+  if(st.carencia) return `<div class="panel s-warn"><h3>En carencia</h3><p>${esc(st.carencia.producto||"Tratamiento")} hasta el <b class="num">${fmt(st.carencia.hasta)}</b>. No faenar ni vender para consumo.</p></div>`;
+  return `<div class="panel s-ok"><h3>Sanidad</h3><p>Sin carencias activas.</p></div>`;
+}
+function reqResumen(a){
+  const cfg=MATERNIDAD[a.especie]; if(!cfg) return "";
+  return `<ul class="tight">
+    <li><b>Espacio:</b> ${cfg.alo.map(x=>`${esc(x.n)}${x.m2?` ≥ ${r1(x.m2,x.m2<1?2:1)} m²`:""}${x.med?` (${esc(x.med)})`:""}`).join("; ")}.</li>
+    ${cfg.extra?`<li>${esc(cfg.extra)}</li>`:""}
+    ${cfg.tAmb?`<li><b>Temperatura del ambiente:</b> ${cfg.tAmb[0]}–${cfg.tAmb[1]} °C.</li>`:""}
+    ${cfg.tCria?`<li><b>Crías:</b> ${esc(cfg.tCria.txt)}</li>`:""}
+    <li><b>Tener listo:</b> ${cfg.mover} días antes del parto.</li>
+  </ul>${cfg.riesgo?`<p class="small" style="margin:0">${esc(cfg.riesgo)}</p>`:""}`;
+}
+function matBlock(a,st){
+  if(!MATERNIDAD[a.especie]) return "";
+  if(!necesitaMat(a,st)){
+    if(esHembra(a) && !espDe(a).ave && a.estado==="activo") return `<div class="row"><button class="btn sm ghost" id="btnMat">Ver condiciones para el parto</button></div>`;
+    return "";
+  }
+  const ev=st.mat||evalMat(a), fp=st.parto||st.eclosion, d=fp?dias(hoy(),fp):null;
+  if(ev.ok) return `<div class="panel s-ok"><div class="row" style="justify-content:space-between"><h3>Lugar de parto apto</h3><button class="btn sm" id="btnMat">Revisar de nuevo</button></div>
+    <p>${esc(ev.e.alojamiento)}${ev.e.m2!=null?` · ${r1(ev.e.m2,2)} m²${ev.min?` (mínimo ${r1(ev.min,2)})`:""}`:""} · revisado el ${fmt(ev.e.fecha)}.${ev.pend?` Quedan ${ev.pend} recomendaciones sin marcar.`:""}</p></div>`;
+  return `<div class="alertbox" role="alert"><div class="row" style="justify-content:space-between;align-items:flex-start"><div><div class="eyebrow" style="color:inherit">Atención · ${espDe(a).ave?"nacimiento":"parto"}${d!=null?` ${enDias(d)} (${fmt(fp)})`:" próximo"}</div><h3>${ev.e?"El lugar de parto no está en condiciones":"Falta revisar el lugar de parto"}</h3></div><button class="btn sm primary" id="btnMat">${ev.e?"Corregir":"Revisar ahora"}</button></div>
+    ${ev.e?`<ul class="tight">${ev.faltas.slice(0,6).map(f=>`<li>${esc(f)}</li>`).join("")}${ev.faltas.length>6?`<li>y ${ev.faltas.length-6} más</li>`:""}</ul>`:reqResumen(a)}</div>`;
+}
+function detalleRepro(x,pp,esp){
+  const s=[];
+  if(x.tipo==="paricion"){
+    if(x.totales!=null||x.vivos!=null) s.push(`${x.totales??x.vivos} nacidos${x.vivos!=null&&x.totales!=null?`, ${x.vivos} vivos`:""}${+x.momificados?`, ${x.momificados} momificados`:""}`);
+    if(x.machos!=null||x.hembras!=null) s.push(`${x.machos||0} ♂ / ${x.hembras||0} ♀`);
+    if(pp?.nacer!=null) s.push(`${kgTxt(pp.nacer)} al nacer`);
+    if(x.tipoParto) s.push(x.tipoParto.toLowerCase());
+    if(+x.transfer) s.push(`${x.transfer>0?"+":""}${x.transfer} adoptadas/cedidas`);
+    let g=""; if(pp?.gest!=null) g=`<div class="small">A los ${gestTxt(pp.gest,esp)} de gestación ${pp.prematuro?'<span class="chip warn">antes de término</span>':pp.tardio?'<span class="chip warn">prolongada</span>':'<span class="chip ok">a término</span>'}</div>`;
+    return (s.length?` · ${esc(s.join(" · "))}`:"")+g+(x.habilidad?`<div class="small muted">Habilidad materna ${x.habilidad}/5${x.calostro==="no"?" · no tomaron calostro a tiempo":""}</div>`:"");
+  }
+  if(x.tipo==="destete"){ if(x.destetados!=null) s.push(`${x.destetados} destetados`); const p=num(x.pesoProm)??(num(x.pesoCamada)&&x.destetados?x.pesoCamada/x.destetados:null); if(p!=null) s.push(kgTxt(p)+" promedio"); if(num(x.pesoCamada)) s.push(kgTxt(+x.pesoCamada)+" la camada"); }
+  if(x.tipo==="baja_cria"){ s.push(`${x.cantidad||1} cría${(x.cantidad||1)>1?"s":""}`); if(x.causa) s.push(x.causa); if(x.edadCria) s.push(`${x.edadCria} días de vida`); }
+  if(x.tipo==="incubacion" && x.huevos) s.push(`${x.huevos} huevos`);
+  if(x.tipo==="eclosion" && x.nacidos) s.push(`${x.nacidos} nacidos${x.huevos?` de ${x.huevos} (${pct(x.nacidos/x.huevos)})`:""}`);
+  if(x.tipo==="postura" && x.huevos) s.push(`${x.huevos} huevos`);
+  if(x.tipo==="aborto" && x.mesGest) s.push(`a los ${x.mesGest}`);
+  return s.length?` · ${esc(s.join(" · "))}`:"";
+}
+function madreHTML(a,m){
+  const B=m.B, lit=LITERA.has(a.especie)||B.vivos>1.2;
+  const cmp=(v,ref,good,fmtf)=>{ if(v==null) return `<b>—</b>`; const ok=good==="hi"?v>=ref*0.95:v<=ref*1.05, mal=good==="hi"?v<ref*0.8:v>ref*1.2; return `<b style="color:var(${ok?"--ok":mal?"--crit":"--warn"})">${fmtf(v)}</b>` };
+  let h=`<div class="stack" style="gap:10px;border-top:1px solid var(--line);padding-top:14px">
+    <div class="row" style="justify-content:space-between"><h3>Desempeño como madre</h3>${m.verdict?`<span class="chip ${m.verdict[0]}">${m.verdict[1]} · ${m.score}/100</span>`:""}</div>
+    ${m.preliminar?`<p class="small muted" style="margin:0">Dato preliminar: ${m.n<2?"con un solo parto no hay intervalo entre partos":"falta registrar el destete"}. La nota se afina con más partos.</p>`:""}
+    <div class="reqs">
+      <div><span>Partos</span><b>${m.n}</b></div>
+      ${lit?`<div><span>Nacidos totales / parto</span><b>${r1(m.tot)}</b></div>`:""}
+      <div><span>Nacidos vivos / parto</span>${cmp(m.vivos,B.vivos,"hi",x=>r1(x))}</div>
+      <div><span>Destetados / parto</span>${cmp(m.destetados,B.vivos*B.sup,"hi",x=>r1(x))}</div>
+      <div><span>Supervivencia al destete</span>${cmp(m.sup,B.sup,"hi",pct)}</div>
+      <div><span>Peso al nacer</span>${cmp(m.nacer,B.nacer,"hi",kgTxt)}</div>
+      <div><span>Peso al destete</span>${cmp(m.pDest,B.dest,"hi",kgTxt)}</div>
+      <div><span>Ganancia de la cría</span><b>${m.gpd!=null?Math.round(m.gpd*1000)+" g/día":"—"}</b></div>
+      <div><span>Gestación promedio</span><b>${m.gest!=null?Math.round(m.gest)+" días":"—"}</b></div>
+      <div><span>Intervalo entre partos</span>${cmp(m.iep,B.iep,"lo",x=>Math.round(x)+" días")}</div>
+      <div><span>Partos por año</span><b>${m.iep?r1(m.partosAnio):"—"}</b></div>
+      <div><span>Kg destetados / año</span>${cmp(m.kgAnio,m.kgRef,"hi",kgTxt)}</div>
+      <div><span>Partos sin ayuda</span><b>${pct(m.faciles)}</b></div>
+      <div><span>Habilidad materna</span><b>${m.hab!=null?r1(m.hab)+"/5":"—"}</b></div>
+    </div>
+    <p class="small muted" style="margin:0">Referencia ${esc(espDe(a).nombre.toLowerCase())}: ${r1(B.vivos)} vivos por parto, ${pct(B.sup)} de supervivencia, ${kgTxt(B.dest)} al destete a los ${B.edadDest} días, ${B.iep} días entre partos (${kgTxt(m.kgRef)} destetados por año). Verde: en la referencia o mejor. Rojo: más de 20% por debajo.</p>
+    <div class="tbl"><table class="ration"><thead><tr><th>Parto</th><th>Gestación</th><th>Nac./vivos</th><th>Peso nacer</th><th>Muertes</th><th>Destet.</th><th>Superv.</th><th>Peso dest.</th><th>Intervalo</th></tr></thead><tbody>
+    ${m.partos.map(x=>`<tr><td class="q">${fmt(x.p.fecha)}</td><td class="q">${x.gest!=null?x.gest+"d":"—"}${x.prematuro?" ⚠":""}</td><td class="q">${x.tot??"—"}/${x.vivos??"—"}</td><td class="q">${kgTxt(x.nacer)}</td><td class="q">${x.bajas||0}</td><td class="q">${x.destetados??"—"}</td><td class="q">${pct(x.sup)}</td><td class="q">${kgTxt(x.pDest)}${x.edadDest!=null?` (${x.edadDest}d)`:""}</td><td class="q">${x.iep!=null?x.iep+"d":"—"}</td></tr>`).join("")}
+    </tbody></table></div>`;
+  const causas={}; for(const r of (a.repro||[]).filter(r=>r.tipo==="baja_cria")) causas[r.causa||"Sin causa"]=(causas[r.causa||"Sin causa"]||0)+(+r.cantidad||1);
+  const cs=Object.entries(causas).sort((p,q)=>q[1]-p[1]);
+  if(cs.length) h+=`<p class="small" style="margin:0"><b>Causas de muerte de crías:</b> ${cs.map(([c,n])=>`${esc(c)} (${n})`).join(", ")}</p>`;
+  return h+`</div>`;
+}
+function chartPesos(p){
+  if(p.length<2) return "";
+  const W=600,H=170,pl=44,pr=14,pt=14,pb=26;
+  const t0=Date.parse(p[0].fecha),t1=Date.parse(p[p.length-1].fecha)||t0+1;
+  let mn=Math.min(...p.map(x=>x.kg)),mx=Math.max(...p.map(x=>x.kg)); const pad=Math.max(10,(mx-mn)*.15); mn=Math.max(0,Math.floor((mn-pad)/10)*10); mx=Math.ceil((mx+pad)/10)*10;
+  const X=f=>pl+(Date.parse(f)-t0)/((t1-t0)||1)*(W-pl-pr), Y=k=>pt+(1-(k-mn)/(mx-mn))*(H-pt-pb);
+  const ticks=[mn,Math.round((mn+mx)/20)*10,mx];
+  const pts=p.map(x=>`${X(x.fecha).toFixed(1)},${Y(x.kg).toFixed(1)}`).join(" ");
+  const last=p[p.length-1];
+  return `<div class="chart"><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Evolución de peso">
+    ${ticks.map(t=>`<line x1="${pl}" x2="${W-pr}" y1="${Y(t)}" y2="${Y(t)}" stroke="var(--line)"/><text x="${pl-6}" y="${Y(t)+4}" text-anchor="end" font-size="11" fill="var(--muted)" font-family="var(--mono)">${t}</text>`).join("")}
+    <polygon points="${X(p[0].fecha)},${H-pb} ${pts} ${X(last.fecha)},${H-pb}" fill="var(--green)" opacity=".12"/>
+    <polyline points="${pts}" fill="none" stroke="var(--green)" stroke-width="2.5" stroke-linejoin="round"/>
+    ${p.map(x=>`<circle cx="${X(x.fecha)}" cy="${Y(x.kg)}" r="3" fill="var(--surface)" stroke="var(--green)" stroke-width="2"/>`).join("")}
+    <circle cx="${X(last.fecha)}" cy="${Y(last.kg)}" r="5" fill="var(--green)"/>
+    <text x="${pl}" y="${H-6}" font-size="11" fill="var(--muted)" font-family="var(--mono)">${fmt(p[0].fecha)}</text>
+    <text x="${W-pr}" y="${H-6}" text-anchor="end" font-size="11" fill="var(--muted)" font-family="var(--mono)">${fmt(last.fecha)}</text>
+  </svg></div>`;
+}
+function tabFicha(a,st){
+  const T=S.fichaTab, rm=(k,i)=>`<button class="x" data-rm="${k}:${i}" aria-label="Borrar registro">✕</button>`;
+  const withIdx=k=>(a[k]||[]).map((x,i)=>({...x,_i:i})).sort((p,q)=>p.fecha<q.fecha?1:-1);
+  let h=`<div class="card stack">`;
+  if(T==="pesadas"){
+    const p=sortF(a.pesadas);
+    h+=`<div class="row" style="justify-content:space-between"><h3>Pesadas</h3><button class="btn sm primary" data-add="pesadas">+ Pesada</button></div>${chartPesos(p)}<div class="tl">`;
+    const L=withIdx("pesadas"); if(!L.length) h+=`<p class="muted">Sin pesadas.</p>`;
+    L.forEach((x,j)=>{const prev=L[j+1]; const g=prev?((x.kg-prev.kg)/Math.max(1,dias(prev.fecha,x.fecha))*1000).toFixed(0):null;
+      h+=`<div class="ev"><span class="d">${fmt(x.fecha)}</span><div><b class="num">${x.kg} kg</b>${x.cc?` · CC ${esc(x.cc)}`:""}${g!=null?` <span class="muted small num">(${g>=0?"+":""}${g} g/día)</span>`:""}${x.obs?`<div class="small muted">${esc(x.obs)}</div>`:""}</div>${rm("pesadas",x._i)}</div>`});
+    h+=`</div>`;
+  }
+  if(T==="dieta") h+=tabDieta(a,st);
+  if(T==="repro"){
+    const puede=esHembra(a)||espDe(a).ave;
+    const mam=!espDe(a).ave&&esHembra(a);
+    h+=`<div class="row" style="justify-content:space-between"><h3>Reproducción</h3>${puede?`<div class="row" style="gap:6px">${mam?`<button class="btn sm" data-add="repro" data-pre="paricion">+ Parto</button><button class="btn sm" data-add="repro" data-pre="destete">+ Destete</button>`:""}<button class="btn sm primary" data-add="repro">+ Evento</button></div>`:""}</div><div class="tl">`;
+    const L=withIdx("repro"); if(!L.length) h+=`<p class="muted">${espDe(a).ave?"Sin eventos. Registrá postura, inicio de incubación y nacimientos.":esHembra(a)?"Sin eventos. Registrá celos, servicios, diagnósticos de preñez y partos.":"No aplica para machos. Podés anotar servicios dados en Notas."}</p>`;
+    const m=st.madre, porF={}; if(m) for(const p of m.partos) porF[p.p.fecha]=p;
+    for(const x of L) h+=`<div class="ev"><span class="d">${fmt(x.fecha)}</span><div><b>${REPRO_TIPOS[x.tipo]||x.tipo}</b>${x.resultado?` · ${esc(x.resultado)}`:""}${x.meses?` · ${esc(x.meses)} meses`:""}${detalleRepro(x,porF[x.fecha],espDe(a))}${x.detalle?`<div class="small muted">${esc(x.detalle)}</div>`:""}</div>${rm("repro",x._i)}</div>`;
+    h+=`</div>`;
+    if(m) h+=madreHTML(a,m);
+    const crias=Object.values(animals).filter(c=>c.id!==a.id && (c.madreId===a.id || (a.caravana && c.madre===a.caravana)));
+    if(crias.length) h+=`<div class="stack" style="gap:8px"><h3>Crías registradas (${crias.reduce((s,c)=>s+cant(c),0)})</h3><div class="list">${crias.sort((p,q)=>(q.fechaNac||"")<(p.fechaNac||"")?-1:1).map(c=>{const sc=estado(c);return `<button class="item" data-open="${c.id}">${thumb(c)}<div><div class="l1">${tagHTML(c)}<span class="name">${esc(c.nombre||c.categoria||"")}</span></div><div class="small muted">${esc([cant(c)>1?`lote de ${cant(c)}`:"",c.sexo==="H"?"hembra":c.sexo==="M"?"macho":"","nació "+fmt(c.fechaNac),c.estado!=="activo"?c.estado:""].filter(Boolean).join(" · "))}</div></div><span class="num">${sc.peso!=null?kgTxt(sc.peso):"—"}</span></button>`}).join("")}</div></div>`;
+  }
+  if(T==="san"){
+    h+=`<div class="row" style="justify-content:space-between"><h3>Historia clínica</h3><button class="btn sm primary" data-add="sanidad">+ Registro</button></div><div class="tl">`;
+    const L=withIdx("sanidad"); if(!L.length) h+=`<p class="muted">Sin registros sanitarios.</p>`;
+    for(const x of L){const fin=+x.carencia>0?sumar(x.fecha,+x.carencia):null;
+      h+=`<div class="ev"><span class="d">${fmt(x.fecha)}</span><div><b>${esc(x.tipo)}</b>${x.producto?` · ${esc(x.producto)}`:""}${x.dosis?` · ${esc(x.dosis)}`:""}${fin?` <span class="chip ${fin>hoy()?"warn":"mute"}">carencia hasta ${fmt(fin)}</span>`:""}${x.obs?`<div class="small muted">${esc(x.obs)}</div>`:""}${x.vet?`<div class="small muted">Vet.: ${esc(x.vet)}</div>`:""}</div>${rm("sanidad",x._i)}</div>`}
+    h+=`</div>`;
+  }
+  if(T==="notas"){
+    h+=`<div class="row" style="justify-content:space-between"><h3>Notas y movimientos</h3><button class="btn sm primary" data-add="notas">+ Nota</button></div><div class="tl">`;
+    const L=withIdx("notas"); if(!L.length) h+=`<p class="muted">Sin notas. Anotá cambios de potrero, ventas, comportamiento o lo que veas en la recorrida.</p>`;
+    for(const x of L) h+=`<div class="ev"><span class="d">${fmt(x.fecha)}</span><div>${esc(x.texto)}</div>${rm("notas",x._i)}</div>`;
+    h+=`</div>`;
+  }
+  if(T==="fotos"){
+    h+=`<div class="row" style="justify-content:space-between"><h3>Fotos de referencia</h3><button class="btn sm primary" id="btnFoto2">+ Foto</button></div>
+    <p class="small muted" style="margin:0">Se usan para comparar cuando identificás un animal. Ideal: una de perfil, una de cara y una del hocico.</p>`;
+    const L=(a.fotos||[]); if(!L.length) h+=`<p class="muted">Sin fotos.</p>`;
+    else h+=`<div class="gallery">${L.map((x,i)=>`<figure><img src="${photoUrl(x.id)}" alt="${esc(x.tipo)}" loading="lazy"><figcaption><span>${esc(x.tipo)} · ${fmt(x.fecha)}</span><button class="x" style="background:none;border:0;color:var(--muted)" data-rm="fotos:${i}" aria-label="Quitar foto">✕</button></figcaption></figure>`).join("")}</div>`;
+  }
+  return h+`</div>`;
+}
+
+/* ---------- dieta ---------- */
+const OBJETIVOS = ["Engorde a faena","Recría (crecimiento)","Terminación rápida","Gestación","Lactancia (cría al pie)","Servicio / reproducción","Mantenimiento","Recuperar estado corporal"];
+const SISTEMAS = {rumiante:["Pastoril","Pastoril con suplemento","Encierre a corral (feedlot)","Mixto"],monogastrico:["Confinamiento","A campo","Mixto"],ave:["Galpón (confinamiento)","A campo / pastoreo","Mixto"],herbivoro:["Jaula","Corral / galpón","A campo"]};
+function objetivoSugerido(a,st){
+  if(st.prenada) return "Gestación";
+  const par=[...sortF(a.repro)].reverse().find(r=>r.tipo==="paricion"), des=par&&(a.repro||[]).find(r=>r.tipo==="destete"&&r.fecha>=par.fecha);
+  if(par && !des && dias(par.fecha,hoy())<220) return "Lactancia (cría al pie)";
+  if(a.pesoObjetivo) return (st.peso && st.peso/a.pesoObjetivo>.85)?"Terminación rápida":"Engorde a faena";
+  if(st.cc && st.cc<2.5) return "Recuperar estado corporal";
+  if(!esHembra(a) && /toro|padrillo|carnero|chivato|reproductor|gallo|macho/i.test(a.categoria||"")) return "Servicio / reproducción";
+  if(a.fechaNac && dias(a.fechaNac,hoy())<365) return "Recría (crecimiento)";
+  return "Mantenimiento";
+}
+function tabDieta(a,st){
+  const D=S.dieta, L=[...(a.dietas||[])].reverse();
+  let h=`<div class="row" style="justify-content:space-between"><h3>Plan de alimentación</h3><button class="btn sm primary" id="btnDieta" ${D.busy||!(sample||window.__local)?"disabled":""}>${D.busy?'<span class="spin"></span> Calculando…':L.length?"Nueva recomendación":"Recomendar dieta"}</button></div>`;
+  if(!sample && !window.__local && ready) h+=`<div class="banner warn">Las recomendaciones no están disponibles en esta vista.</div>`;
+  if(D.busy && !window.__local) h+=`<p class="muted small" style="margin:0">Claude está armando la ración con la ficha y el historial. Suele tardar entre 20 y 60 segundos.</p>`;
+  if(D.err) h+=`<div class="banner warn">${esc(D.err)}</div>`;
+  if(!L.length && !D.busy) h+=`<p class="muted" style="margin:0">Todavía no hay recomendaciones. Se calcula con la especie, categoría, edad, pesadas, ganancia diaria, condición corporal, estado reproductivo y sanidad, más los alimentos que tengas disponibles.</p>`;
+  if(L[0]) h+=dietaHTML(L[0],a);
+  if(L.length>1) h+=`<details><summary class="small" style="cursor:pointer">Recomendaciones anteriores (${L.length-1})</summary><div class="stack" style="margin-top:10px">${L.slice(1).map(r=>dietaHTML(r,a)).join("")}</div></details>`;
+  return h;
+}
+function dietaHTML(d,a){
+  const r=d.r||{}, lote=cant(a)>1, ex=r.resultado_esperado||{};
+  return `<div class="diet stack" style="gap:12px;border-top:1px solid var(--line);padding-top:12px">
+  <div class="row" style="justify-content:space-between"><div><div class="eyebrow">${fmt(d.fecha)} · ${esc(d.objetivo)} · ${esc(d.sistema)}</div></div></div>
+  ${r.diagnostico?`<p style="margin:0">${esc(r.diagnostico)}</p>`:""}
+  ${(r.requerimientos||[]).length?`<div class="reqs">${r.requerimientos.map(x=>`<div><span>${esc(x.nutriente)}</span><b>${esc(x.valor)}</b></div>`).join("")}</div>`:""}
+  ${(r.racion||[]).length?`<div><h4>Ración diaria${lote?" (por cabeza y total del lote)":" por animal"}</h4><div class="tbl"><table class="ration"><thead><tr><th>Alimento</th><th>Por cabeza/día</th>${lote?"<th>Lote/día</th>":""}<th>Cómo</th></tr></thead><tbody>${r.racion.map(x=>`<tr><td><b>${esc(x.alimento)}</b></td><td class="q">${esc(x.cantidad)}</td>${lote?`<td class="q">${esc(x.total_lote||"—")}</td>`:""}<td class="small">${esc(x.nota||"")}</td></tr>`).join("")}</tbody></table></div></div>`:""}
+  ${(ex.ganancia_diaria||ex.conversion||ex.dias_a_objetivo)?`<div class="reqs">${ex.ganancia_diaria?`<div><span>Ganancia esperada</span><b>${esc(ex.ganancia_diaria)}</b></div>`:""}${ex.conversion?`<div><span>Conversión</span><b>${esc(ex.conversion)}</b></div>`:""}${ex.dias_a_objetivo?`<div><span>Tiempo al objetivo</span><b>${esc(ex.dias_a_objetivo)}</b></div>`:""}</div>`:""}
+  ${r.agua||r.minerales?`<dl class="kv">${r.agua?`<dt>Agua</dt><dd>${esc(r.agua)}</dd>`:""}${r.minerales?`<dt>Minerales</dt><dd>${esc(r.minerales)}</dd>`:""}${r.transicion?`<dt>Acostumbramiento</dt><dd>${esc(r.transicion)}</dd>`:""}</dl>`:""}
+  ${(r.precauciones||[]).length?`<div><h4>Cuidados</h4><ul class="tight">${r.precauciones.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>`:""}
+  ${(r.controlar||[]).length?`<div><h4>Qué medir para ajustar</h4><ul class="tight">${r.controlar.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>`:""}
+  ${(r.alternativas||[]).length?`<div><h4>Alternativas</h4><ul class="tight">${r.alternativas.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>`:""}
+  <p class="small muted" style="margin:0">${window.__local?"Calculada con tablas generales de requerimientos. ":""}Es una guía orientativa. Ajustala con tu nutricionista o veterinario, idealmente con un análisis de los alimentos.</p>
+  </div>`;
+}
+function formDieta(){
+  const a=animals[S.sel], st=estado(a), g=grupoDieta(a.especie), prev=(a.dietas||[]).slice(-1)[0]||{};
+  const disp=new Set(prev.alimentos||[]);
+  openSheet(`<form id="fDieta" class="stack"><h2>Recomendar dieta</h2>
+  <p class="muted small" style="margin:0">${esc(espDe(a).nombre)} · ${esc(a.categoria||"")} · ${st.peso!=null?st.peso+" kg":"sin peso"}${st.gdp!=null?` · ${(st.gdp*1000).toFixed(0)} g/día`:""}${cant(a)>1?` · lote de ${cant(a)}`:""}</p>
+  <div class="grid2">
+    ${fld("objetivo","Objetivo",sel("objetivo",OBJETIVOS,prev.objetivo||objetivoSugerido(a,st)))}
+    ${fld("sistema","Sistema",sel("sistema",SISTEMAS[g],prev.sistema||SISTEMAS[g][0]))}
+    <div class="field full"><label>Alimentos que tenés disponibles</label><div class="checks">${ALIMENTOS[g].map((x,i)=>`<label><input type="checkbox" name="al" value="${esc(x)}" ${disp.has(x)?"checked":""}>${esc(x)}</label>`).join("")}</div></div>
+    ${fld("otros","Otros alimentos o subproductos",inp("otros",prev.otros||"","text",'placeholder="Rollo de moha, papa, pellet de soja…"'),"full")}
+    ${fld("extra","Datos que ayuden",`<textarea id="extra" name="extra" placeholder="Calidad del pasto, superficie, precio del maíz, si comen en comedero o autoconsumo…">${esc(prev.extra||"")}</textarea>`,"full")}
+  </div>
+  <div class="row" style="justify-content:flex-end"><button type="button" class="btn ghost" data-close>Cancelar</button><button class="btn primary">Calcular ración</button></div></form>`);
+  $("#fDieta").onsubmit=e=>{e.preventDefault();const fd=new FormData(e.target);
+    const inp={objetivo:fd.get("objetivo"),sistema:fd.get("sistema"),alimentos:fd.getAll("al"),otros:(fd.get("otros")||"").trim(),extra:(fd.get("extra")||"").trim()};
+    closeSheet(); recomendarDieta(a.id,inp);};
+}
+function fichaTexto(a,st){
+  const e=espDe(a), L=[];
+  L.push(`Especie: ${e.nombre} (${a.especie}). Raza: ${a.raza||"s/d"}. Categoría: ${a.categoria||"s/d"}. Sexo: ${a.sexo==="H"?"hembra":a.sexo==="M"?"macho":"s/d"}.`);
+  L.push(`Edad: ${edadTxt(a.fechaNac)}${a.fechaNac?` (nacido ${a.fechaNac})`:""}. ${cant(a)>1?`Es un LOTE de ${cant(a)} cabezas; los pesos son promedio por cabeza.`:"Animal individual."}`);
+  L.push(`Pesadas (fecha: kg, CC 1-5): ${sortF(a.pesadas).slice(-8).map(p=>`${p.fecha}: ${p.kg}${p.cc?` CC${p.cc}`:""}`).join("; ")||"sin pesadas"}.`);
+  L.push(`Peso actual: ${st.peso??"s/d"} kg. Ganancia diaria reciente: ${st.gdp!=null?(st.gdp*1000).toFixed(0)+" g/día":"s/d"}. Condición corporal: ${st.cc??"s/d"}. Peso objetivo de faena: ${a.pesoObjetivo||"no definido"} (referencia de la especie ${e.obj} kg).`);
+  L.push(`Reproducción: ${st.prenada?`preñada, parto estimado ${st.parto}`:st.servPend?`servida el ${st.servPend.fecha}, sin diagnóstico`:st.eclosion?`en incubación, eclosión ${st.eclosion}`:"sin gestación registrada"}. Eventos: ${sortF(a.repro).slice(-6).map(r=>`${r.fecha} ${REPRO_TIPOS[r.tipo]||r.tipo}${r.resultado?" "+r.resultado:""}${r.detalle?" ("+r.detalle+")":""}`).join("; ")||"ninguno"}.`);
+  L.push(`Sanidad: ${sortF(a.sanidad).slice(-6).map(s=>`${s.fecha} ${s.tipo} ${s.producto||""}${s.obs?" - "+s.obs:""}`).join("; ")||"sin registros"}. ${st.carencia?`En carencia hasta ${st.carencia.hasta}.`:""}`);
+  if(st.madre){const m=st.madre; L.push(`Como madre: ${m.n} partos, ${r1(m.vivos)} vivos/parto, supervivencia al destete ${pct(m.sup)}, peso al destete ${kgTxt(m.pDest)}, intervalo entre partos ${m.iep?Math.round(m.iep)+" días":"s/d"}, nota ${m.score??"s/d"}/100.`);
+    const u=m.partos[m.partos.length-1]; if(!u.dest) L.push(`Tiene cría al pie: parió el ${u.p.fecha} (${u.vivos??"?"} crías vivas).`);}
+  if(a.lote) L.push(`Potrero/lote: ${a.lote}.`);
+  const notas=sortF(a.notas).slice(-3); if(notas.length) L.push(`Notas: ${notas.map(n=>n.fecha+" "+n.texto).join("; ")}`);
+  return L.join("\n").slice(0,6000);
+}
+async function recomendarDieta(id,inp){
+  const a=animals[id]; if(!a) return; const st=estado(a); S.dieta={busy:true,err:""}; S.fichaTab="dieta"; render();
+  if(window.__local){
+    try{ const r=window.__local.dieta(a,st,inp,{espDe,grupoDieta,cant}); save({...animals[id],dietas:[...(animals[id].dietas||[]),{fecha:hoy(),...inp,r}].slice(-5)}); S.dieta={busy:false,err:""} }
+    catch(e){ console.error(e); S.dieta={busy:false,err:"No se pudo calcular la ración."} }
+    render(); return;
+  }
+  const prompt=`Sos nutricionista de producción animal en Argentina (hemisferio sur). Fecha de hoy: ${hoy()}.
+Armá una ración práctica para este ${cant(a)>1?"lote":"animal"}, con el objetivo de producir la mayor cantidad de carne con la mejor eficiencia (conversión alimenticia y costo), sin comprometer la salud ni la reproducción.
+
+FICHA:
+${fichaTexto(a,st)}
+
+OBJETIVO ELEGIDO: ${inp.objetivo}
+SISTEMA: ${inp.sistema}
+ALIMENTOS DISPONIBLES: ${[...inp.alimentos,inp.otros].filter(Boolean).join(", ")||"no indicó; proponé una ración con alimentos comunes en Argentina"}
+${inp.extra?`DATOS DEL PRODUCTOR: ${inp.extra}`:""}
+
+Reglas: usá requerimientos acordes a la especie, categoría, peso y estado (gestación, lactancia, crecimiento). Priorizá los alimentos disponibles. Cantidades en kg o g tal cual (as fed) por cabeza por día, redondeadas y fáciles de medir${cant(a)>1?`, y el total diario para las ${cant(a)} cabezas`:""}. Si la ganancia actual está por debajo de lo esperable para la categoría, decilo en el diagnóstico. Si está en carencia o tiene un problema sanitario, tenelo en cuenta. No inventes datos que no están en la ficha.
+
+Respondé solo con JSON:
+{"diagnostico":"2-3 frases sobre su estado y cuánto puede mejorar","requerimientos":[{"nutriente":"Materia seca","valor":"9,5 kg/día"},{"nutriente":"Proteína bruta","valor":"13 %"},{"nutriente":"Energía","valor":"2,6 Mcal EM/kg MS"}],"racion":[{"alimento":"","cantidad":"","total_lote":"","nota":"cómo darlo"}],"agua":"","minerales":"","transicion":"cómo acostumbrarlo sin riesgo","resultado_esperado":{"ganancia_diaria":"","conversion":"kg alimento por kg ganado","dias_a_objetivo":""},"precauciones":[""],"controlar":["qué medir y cada cuánto para ajustar"],"alternativas":["qué cambiar si falta un alimento"]}
+Textos breves, en español rioplatense.`;
+  try{
+    const r=await sample.json(prompt);
+    const cur=animals[id]; if(!cur) return;
+    const reg={fecha:hoy(),...inp,r};
+    save({...cur,dietas:[...(cur.dietas||[]),reg].slice(-5)});
+    S.dieta={busy:false,err:""};
+  }catch(e){ S.dieta={busy:false,err:e?.code==="invalid_json"?"La respuesta vino incompleta. Probá de nuevo.":errTxt(e).replace("analizar la foto","calcular la dieta")} }
+  render();
+}
+
+/* ---------- formularios ---------- */
+function openSheet(html){ $("#sheet").innerHTML=`<div class="sheet" id="sheetBg"><div class="box" role="dialog" aria-modal="true">${html}</div></div>`; const f=$("#sheet input,#sheet select");f&&f.focus() }
+function closeSheet(){ $("#sheet").innerHTML="" }
+const fld=(id,label,inner,cls="",hint="")=>`<div class="field ${cls}"><label for="${id}">${label}</label>${inner}${hint?`<span class="hint">${hint}</span>`:""}</div>`;
+const inp=(id,v="",type="text",extra="")=>`<input id="${id}" name="${id}" type="${type}" value="${esc(v)}" ${extra}>`;
+const sel=(id,opts,v="")=>`<select id="${id}" name="${id}">${opts.map(o=>{const [val,t]=Array.isArray(o)?o:[o,o];return `<option value="${esc(val)}" ${String(v)===String(val)?"selected":""}>${esc(t)}</option>`}).join("")}</select>`;
+
+function formAnimal(a){
+  const n=!a; a=a||S.prefill||{especie:S.esp||"Bovino",estado:"activo"}; const esp=espDe(a);
+  openSheet(`<form id="fAnimal" class="stack"><h2>${n?"Nuevo animal":"Editar datos"}</h2>
+  ${S.prefill&&n?`<div class="banner info">Completé algunos datos con lo que se vio en la foto. Revisalos.</div>`:""}
+  <div class="grid2">
+    ${fld("caravana","Caravana (número visible)",inp("caravana",a.caravana,"text",'inputmode="text" autocomplete="off"'))}
+    ${fld("caravanaSenasa","Caravana oficial SENASA / RENSPA",inp("caravanaSenasa",a.caravanaSenasa))}
+    ${fld("nombre","Nombre o apodo",inp("nombre",a.nombre))}
+    ${fld("especie","Especie",sel("especie",Object.entries(ESPECIES).map(([k,e])=>[k,e.nombre]),a.especie))}
+    ${fld("cantidad","Cabezas en esta ficha",inp("cantidad",a.cantidad||1,"number",'min="1" step="1" inputmode="numeric"'),"","1 = animal individual. Más de 1 = lote (pollos, conejos, lechones); el peso es el promedio.")}
+    ${fld("raza","Raza",`<input id="raza" name="raza" list="razas" value="${esc(a.raza||"")}"><datalist id="razas">${esp.razas.map(r=>`<option value="${esc(r)}">`).join("")}</datalist>`)}
+    ${fld("categoria","Categoría",sel("categoria",["",...esp.cats],a.categoria))}
+    ${fld("sexo","Sexo",sel("sexo",[["","—"],["H","Hembra"],["M","Macho"]],a.sexo))}
+    ${fld("fechaNac","Fecha de nacimiento",inp("fechaNac",a.fechaNac,"date"),"","Si no la sabés, poné una aproximada")}
+    ${fld("madre","Madre (caravana)",inp("madre",a.madre))}
+    ${fld("padre","Padre / toro o pajuela",inp("padre",a.padre))}
+    ${fld("pelaje","Pelaje",inp("pelaje",a.pelaje,"text",'placeholder="Negro, colorado, overo…"'))}
+    ${fld("lote","Potrero / lote",inp("lote",a.lote))}
+    ${fld("senas","Señas particulares",`<textarea id="senas" name="senas" placeholder="Manchas, marca a fuego, señal de oreja, cuernos, cicatrices">${esc(a.senas||"")}</textarea>`,"full")}
+    ${fld("origen","Origen",inp("origen",a.origen,"text",'placeholder="Nacido en el campo, comprado a…"'))}
+    ${fld("pesoObjetivo","Peso objetivo de faena (kg)",inp("pesoObjetivo",a.pesoObjetivo??"","number",'min="0" step="any" inputmode="decimal"'),"",`<span id="objHint">Referencia para ${esc(esp.nombre.toLowerCase())}: ${esp.obj} kg</span>`)}
+    ${fld("estado","Estado",sel("estado",[["activo","Activo"],["vendido","Vendido"],["faenado","Faenado"],["muerto","Muerto"]],a.estado))}
+    ${n?fld("pesoIni","Peso actual (kg), opcional",inp("pesoIni","","number",'min="0" step="any" inputmode="decimal"')):""}
+  </div>
+  <div class="row" style="justify-content:flex-end"><button type="button" class="btn ghost" data-close>Cancelar</button><button class="btn primary">Guardar</button></div></form>`);
+  $("#especie").onchange=e=>{const E=ESPECIES[e.target.value];$("#categoria").innerHTML=["",...E.cats].map(c=>`<option>${c}</option>`).join("");$("#razas").innerHTML=E.razas.map(r=>`<option value="${r}">`).join("");$("#objHint").textContent=`Referencia para ${E.nombre.toLowerCase()}: ${E.obj} kg`};
+  $("#fAnimal").onsubmit=e=>{e.preventDefault();const d=Object.fromEntries(new FormData(e.target));
+    const b=n?{id:uid(),fotos:[],pesadas:[],sanidad:[],repro:[],notas:[],creado:hoy()}:{...animals[a.id]};
+    for(const k of ["caravana","caravanaSenasa","nombre","especie","raza","categoria","sexo","fechaNac","madre","padre","pelaje","lote","senas","origen","estado"]) b[k]=(d[k]||"").trim();
+    b.pesoObjetivo=d.pesoObjetivo?+d.pesoObjetivo:null;
+    b.cantidad=Math.max(1,parseInt(d.cantidad)||1);
+    if(!b.sexo && b.categoria) b.sexo=HEMBRAS.test(b.categoria)?"H":"M";
+    if(n && d.pesoIni) b.pesadas.push({fecha:hoy(),kg:+d.pesoIni});
+    const pend=n&&S.prefill?.blob; S.prefill=null; closeSheet();
+    save(b); S.view="ficha"; S.sel=b.id; render();
+    if(pend) subirFoto(b.id,pend,"Perfil");
+  };
+}
+
+function formEvento(k){
+  const a=animals[S.sel], h=hoy(); let inner="";
+  if(k==="pesadas") inner=`<h2>Nueva pesada</h2><div class="grid2">${fld("fecha","Fecha",inp("fecha",h,"date",'required'))}${fld("kg",cant(a)>1?"Peso promedio (kg)":"Peso (kg)",inp("kg","","number",'required min="0" step="any" inputmode="decimal"'))}${fld("cc","Condición corporal (1 a 5)",sel("cc",["","1","1.5","2","2.5","3","3.5","4","4.5","5"]))}${fld("obs","Observación",inp("obs"))}</div>`;
+  if(k==="repro") inner=`<h2>Evento reproductivo</h2><div class="grid2">${fld("tipo","Tipo",sel("tipo",reproTipos(a).map(k=>[k,REPRO_TIPOS[k]])))}${fld("fecha","Fecha",inp("fecha",h,"date",'required'))}
+    ${camposRepro(a)}
+    ${fld("detalle","Detalle",inp("detalle","","text",'placeholder="IA con pajuela X, padrillo 205, observaciones…"'),"full")}</div>`;
+  if(k==="sanidad") inner=`<h2>Registro sanitario</h2><div class="grid2">${fld("tipo","Tipo",sel("tipo",SAN_TIPOS))}${fld("fecha","Fecha",inp("fecha",h,"date",'required'))}
+    ${fld("producto","Producto / enfermedad",inp("producto","","text",'placeholder="Aftosa, ivermectina, queratoconjuntivitis…"'))}${fld("dosis","Dosis y vía",inp("dosis","","text",'placeholder="5 ml subcutánea"'))}
+    ${fld("carencia","Días de carencia (retiro)",inp("carencia","","number",'min="0" step="1" inputmode="numeric"'),"","Está en el marbete del producto. Bloquea la faena hasta que se cumpla.")}${fld("vet","Veterinario",inp("vet"))}
+    ${fld("obs","Observaciones / diagnóstico",`<textarea id="obs" name="obs"></textarea>`,"full")}</div>`;
+  if(k==="notas") inner=`<h2>Nueva nota</h2><div class="grid2">${fld("fecha","Fecha",inp("fecha",h,"date",'required'))}${fld("texto","Nota",`<textarea id="texto" name="texto" required></textarea>`,"full")}</div>`;
+  openSheet(`<form id="fEv" class="stack">${inner}<div class="row" style="justify-content:flex-end"><button type="button" class="btn ghost" data-close>Cancelar</button><button class="btn primary">Guardar</button></div></form>`);
+  if(k==="repro"){const up=()=>{const t=$("#tipo").value;document.querySelectorAll("#fEv [data-for]").forEach(w=>w.hidden=!w.dataset.for.split(" ").includes(t))};$("#tipo").onchange=up;up();
+    const pre=S.preTipo; if(pre&&reproTipos(a).includes(pre)){$("#tipo").value=pre;up()} S.preTipo=null;
+    const f=$("#fecha"), ag=$("#agGest"); const upG=()=>{ if(!ag) return; const t=$("#tipo").value, serv=[...sortF(a.repro)].reverse().find(r=>r.tipo==="servicio"&&r.fecha<f.value);
+      if((t==="paricion"||t==="aborto") && serv){const d=dias(serv.fecha,f.value); ag.textContent=`Servicio del ${fmt(serv.fecha)}: ${t==="paricion"?"parió":"abortó"} a los ${gestTxt(d,espDe(a))} de gestación (normal: ${espDe(a).gest} días).`; ag.hidden=false} else ag.hidden=true };
+    f.addEventListener("change",upG); $("#tipo").addEventListener("change",upG); upG();}
+  $("#fEv").onsubmit=e=>{e.preventDefault();const d=Object.fromEntries(new FormData(e.target));const r={fecha:d.fecha};
+    if(k==="pesadas"){r.kg=+d.kg;if(d.cc)r.cc=+d.cc;if(d.obs)r.obs=d.obs}
+    let crias=null;
+    if(k==="repro"){r.tipo=d.tipo;
+      const put=(key,src=key)=>{const v=num(d[src]); if(v!=null) r[key]=v};
+      if(d.tipo==="tacto"){r.resultado=d.resultado;put("meses")}
+      if(d.tipo==="paricion"){["totales","vivos","momificados","machos","hembras","pesoProm","pesoCamada","transfer","habilidad"].forEach(x=>put(x)); if(r.totales!=null&&r.vivos==null) r.vivos=r.totales; if(d.tipoParto) r.tipoParto=d.tipoParto; if(d.calostro) r.calostro=d.calostro; if(d.crearCrias) crias=true}
+      if(d.tipo==="destete"){put("destetados");put("pesoProm","pesoPromD");put("pesoCamada","pesoCamadaD")}
+      if(d.tipo==="baja_cria"){r.cantidad=num(d.cantidadB)||1; r.causa=d.causa; put("edadCria")}
+      if(d.tipo==="aborto" && d.mesGest) r.mesGest=d.mesGest;
+      if(["postura","incubacion"].includes(d.tipo)) put("huevos");
+      if(d.tipo==="eclosion"){put("huevos","huevosE");put("nacidos")}
+      if(d.detalle)r.detalle=d.detalle}
+    if(k==="sanidad"){Object.assign(r,{tipo:d.tipo,producto:d.producto,dosis:d.dosis,vet:d.vet,obs:d.obs});if(d.carencia)r.carencia=+d.carencia}
+    if(k==="notas") r.texto=d.texto;
+    const b={...a,[k]:[...(a[k]||[]),r]}; closeSheet(); save(b);
+    if(crias && r.vivos>0) crearCrias(b,r); else toast("Guardado");
+    if(k==="repro" && ((r.tipo==="tacto"&&r.resultado==="preñada")||r.tipo==="incubacion")){ const ev=evalMat(b); if(ev && !ev.ok) setTimeout(()=>formMaternidad(animals[b.id]||b,true),350) }
+  };
+}
+function formMaternidad(a,alerta){
+  const cfg=MATERNIDAD[a.especie]; if(!cfg) return;
+  const prev=a.maternidad||{}, chk=new Set(prev.checks||[]), st=estado(a), fp=st.parto||st.eclosion;
+  openSheet(`<form id="fMat" class="stack">
+  ${alerta?`<div class="alertbox" role="alert"><h3>${esc(a.caravana||a.nombre||"Esta hembra")} está ${espDe(a).ave?"en incubación":"preñada"}: revisá dónde va a ${espDe(a).ave?"nacer la cría":"parir"}</h3><p style="margin:0">Un lugar chico, frío o mal preparado es la principal causa de crías muertas por aplastamiento, frío o hambre.${fp?` ${espDe(a).ave?"Nacimiento":"Parto"} estimado: <b>${fmt(fp)}</b>.`:""}</p></div>`:`<h2>Lugar de parto</h2>`}
+  <div class="card stack" style="gap:8px;padding:12px"><div class="eyebrow">Requisitos para ${esc(espDe(a).nombre.toLowerCase())}</div>${reqResumen(a)}</div>
+  <div class="grid2">
+    ${fld("alojamiento","Dónde va a parir",sel("alojamiento",cfg.alo.map(x=>x.n),prev.alojamiento||cfg.alo[0].n))}
+    ${fld("lugar","Nombre del lugar",inp("lugar",prev.lugar||"","text",'placeholder="Paridera 3, box 2, potrero del bajo…"'))}
+    <div class="field" data-med><label for="largo">Largo (m)</label>${inp("largo",prev.largo??"","number",'min="0" step="any" inputmode="decimal"')}</div>
+    <div class="field" data-med><label for="ancho">Ancho (m)</label>${inp("ancho",prev.ancho??"","number",'min="0" step="any" inputmode="decimal"')}</div>
+    ${cfg.tAmb?fld("tAmb","Temperatura del ambiente medida (°C)",inp("tAmb",prev.tAmb??"","number",'step="any" inputmode="decimal"'),"","Opcional"):""}
+    ${cfg.tCria?.min?fld("tCria","Temperatura en la zona de crías (°C)",inp("tCria",prev.tCria??"","number",'step="any" inputmode="decimal"'),"","Opcional, medila con la fuente de calor encendida"):""}
+  </div>
+  <div class="stack" style="gap:6px"><div class="eyebrow">Verificá en el lugar</div><div class="checklist">${cfg.items.map((it,i)=>`<label class="${it.c?"imp":""}"><input type="checkbox" name="chk" value="${i}" ${chk.has(i)?"checked":""}><span>${it.c?'<span class="req">Imprescindible</span>':""}${esc(it.t)}</span></label>`).join("")}</div></div>
+  <div id="veredicto"></div>
+  <div class="row" style="justify-content:flex-end"><button type="button" class="btn ghost" data-close>Después</button><button class="btn primary">Guardar revisión</button></div></form>`);
+  const leer=()=>{const fd=new FormData($("#fMat")); const L=num(fd.get("largo")),W=num(fd.get("ancho"));
+    return {fecha:hoy(),alojamiento:fd.get("alojamiento"),lugar:(fd.get("lugar")||"").trim(),largo:L,ancho:W,m2:L!=null&&W!=null?+(L*W).toFixed(2):null,tAmb:num(fd.get("tAmb")),tCria:num(fd.get("tCria")),checks:fd.getAll("chk").map(Number)}};
+  const upd=()=>{const e=leer(), alo=cfg.alo.find(x=>x.n===e.alojamiento);
+    document.querySelectorAll("#fMat [data-med]").forEach(w=>w.hidden=alo.m2==null&&!alo.porCria);
+    const ev=evalMat({...a,maternidad:e,repro:(a.repro||[]).filter(r=>!(r.tipo==="paricion"&&r.fecha>=e.fecha))});
+    $("#veredicto").innerHTML= ev.ok?`<div class="veredicto good">Apto para el parto${e.m2!=null?` · ${r1(e.m2,2)} m²`:""}${ev.pend?` · ${ev.pend} recomendaciones sin marcar`:""}</div>`
+      :`<div class="veredicto bad">No apto todavía (${ev.faltas.length} ${ev.faltas.length>1?"puntos":"punto"})${e.m2!=null&&ev.min?` · ${r1(e.m2,2)} de ${r1(ev.min,2)} m²`:ev.min?` · se necesitan ${r1(ev.min,2)} m²${ev.crias?` para ~${ev.crias} crías`:""}`:""}</div>`;};
+  $("#fMat").addEventListener("input",upd); $("#fMat").addEventListener("change",upd); upd();
+  $("#fMat").onsubmit=e=>{e.preventDefault(); const m=leer(); closeSheet(); save({...animals[a.id],maternidad:m});
+    const ev=evalMat({...animals[a.id],maternidad:m}); toast(ev.ok?"Lugar de parto apto":"Guardado: el lugar todavía no es apto");};
+}
+function camposRepro(a){
+  const esp=espDe(a), B=MAD[a.especie]||{}, lit=LITERA.has(a.especie)||(B.vivos||1)>1.2, u=B.nacer&&B.nacer<1?"kg (ej. 0,06)":"kg";
+  const w=(tipos,html,full)=>`<div class="field${full?" full":""}" data-for="${tipos}">${html}</div>`;
+  const n=(id,lbl,extra='min="0" step="1" inputmode="numeric"')=>`<label for="${id}">${lbl}</label>${inp(id,"","number",extra)}`;
+  return `
+  <p class="small muted full" id="agGest" data-for="paricion aborto" hidden style="margin:0"></p>
+  ${w("tacto",`<label for="resultado">Resultado</label>`+sel("resultado",["preñada","vacía","dudosa"]))}
+  ${w("tacto",n("meses","Meses de preñez",'min="0" max="12" step="0.5"'))}
+  ${w("paricion",n("totales",lit?"Nacidos totales":"Crías nacidas"))}
+  ${w("paricion",n("vivos","Nacidos vivos"))}
+  ${lit?w("paricion",n("momificados","Momificados")):""}
+  ${w("paricion",n("machos","Machos"))}
+  ${w("paricion",n("hembras","Hembras"))}
+  ${w("paricion",n("pesoProm",`Peso promedio al nacer (${u})`,'min="0" step="any" inputmode="decimal"'))}
+  ${lit?w("paricion",n("pesoCamada","Peso total de la camada (kg)",'min="0" step="any" inputmode="decimal"')):""}
+  ${w("paricion",`<label for="tipoParto">Parto</label>`+sel("tipoParto",["Normal","Asistido (ayuda leve)","Distócico (ayuda fuerte)","Cesárea"]))}
+  ${w("paricion",`<label for="habilidad">Habilidad materna</label>`+sel("habilidad",[["","Sin evaluar"],["5","5 · Excelente: amamanta, cuida, tranquila"],["4","4 · Buena"],["3","3 · Normal"],["2","2 · Floja: poca leche o descuida"],["1","1 · Mala: rechaza, pisa o agrede"]]))}
+  ${w("paricion",`<label for="calostro">¿Tomaron calostro en las primeras horas?</label>`+sel("calostro",[["","Sin dato"],["si","Sí"],["no","No o tarde"]]))}
+  ${lit?w("paricion",n("transfer","Crías adoptadas (+) o cedidas (−)",'step="1" inputmode="numeric"')):""}
+  ${w("paricion",`<label style="display:flex;gap:8px;align-items:center;font-weight:600;color:var(--ink)"><input type="checkbox" name="crearCrias" value="1" checked style="width:auto">Crear ${lit?"la ficha de la camada":"las fichas de las crías"} para seguirlas</label>`,true)}
+  ${w("destete",n("destetados","Crías destetadas"))}
+  ${w("destete",n("pesoPromD",`Peso promedio al destete (${u})`,'min="0" step="any" inputmode="decimal"'))}
+  ${lit?w("destete",n("pesoCamadaD","Peso total destetado (kg)",'min="0" step="any" inputmode="decimal"')):""}
+  ${w("baja_cria",n("cantidadB","Cantidad"))}
+  ${w("baja_cria",`<label for="causa">Causa</label>`+sel("causa",CAUSAS))}
+  ${w("baja_cria",n("edadCria","Días de vida"))}
+  ${w("aborto",`<label for="mesGest">Momento de la gestación</label>${inp("mesGest","","text",'placeholder="Ej.: 5 meses, tercer tercio"')}`)}
+  ${w("postura incubacion",n("huevos","Cantidad de huevos"))}
+  ${w("eclosion",n("huevosE","Huevos incubados"))}
+  ${w("eclosion",n("nacidos","Nacidos"))}`;
+}
+function crearCrias(m,p){
+  const esp=espDe(m), lit=LITERA.has(m.especie), par=["Bovino","Bubalino","Ovino","Caprino","Equino"].includes(m.especie);
+  const serv=[...sortF(m.repro)].reverse().find(r=>r.tipo==="servicio"&&r.fecha<p.fecha);
+  const base={especie:m.especie,raza:m.raza||"",madre:m.caravana||"",madreId:m.id,padre:serv?.detalle||"",fechaNac:p.fecha,origen:"Nacido en el campo",lote:m.lote||"",estado:"activo",pesoObjetivo:esp.obj,fotos:[],sanidad:[],repro:[],notas:[],creado:hoy()};
+  const peso=num(p.pesoProm)??(num(p.pesoCamada)&&p.vivos?+(p.pesoCamada/p.vivos).toFixed(3):null);
+  let nuevos=[];
+  if(lit || p.vivos>4) nuevos=[{...base,id:uid(),caravana:(m.caravana?m.caravana+"-":"")+"C"+fmt(p.fecha).replace(/\//g,""),nombre:"Camada de "+(m.caravana||m.nombre||"madre"),cantidad:p.vivos,categoria:esp.cats[0],pesadas:peso!=null?[{fecha:p.fecha,kg:peso}]:[]}];
+  else { let mach=+p.machos||0, hem=+p.hembras||0;
+    for(let i=0;i<p.vivos;i++){ const sx=mach>0?(mach--,"M"):hem>0?(hem--,"H"):""; nuevos.push({...base,id:uid(),caravana:"",nombre:`Cría ${i+1} de ${m.caravana||m.nombre||"madre"}`,cantidad:1,sexo:sx,categoria:par?(sx==="H"?esp.cats[1]:esp.cats[0]):esp.cats[0],pesadas:peso!=null?[{fecha:p.fecha,kg:peso}]:[]}) } }
+  for(const c of nuevos) save(c);
+  toast(`Parto guardado y ${nuevos.length>1?nuevos.length+" fichas de crías creadas":"ficha de cría creada"}`);
+}
+
+function formFoto(){
+  openSheet(`<form id="fFoto" class="stack"><h2>Agregar foto</h2>
+  ${assets?"":`<div class="banner warn">Solo quien puede editar el rodeo puede subir fotos.</div>`}
+  <div class="grid2">${fld("tipoFoto","Tipo de foto",sel("tipoFoto",FOTO_TIPOS))}${fld("archFoto","Foto",`<input id="archFoto" name="archFoto" type="file" accept="image/*" capture="environment" required>`)}</div>
+  <div class="row" style="justify-content:flex-end"><button type="button" class="btn ghost" data-close>Cancelar</button><button class="btn primary" ${assets?"":"disabled"}>Subir</button></div></form>`);
+  $("#fFoto").onsubmit=async e=>{e.preventDefault();const file=$("#archFoto").files[0];if(!file)return;const t=$("#tipoFoto").value;closeSheet();subirFoto(S.sel,await shrink(file),t)};
+}
+async function agregarFirmas(id,blob,tipo,fotoId){
+  try{ const fs=await window.__local.firmas(blob); const a=animals[id]; if(!a) return;
+    const nuevas=fs.map(f=>({...f,t:tipo,f:fotoId}));
+    let todas=[...(a.firmas||[]),...nuevas];
+    const aprendidas=todas.filter(x=>x.t==="Confirmada"); if(aprendidas.length>12) todas=todas.filter(x=>x!==aprendidas[0]&&x!==aprendidas[1]);
+    save({...a,firmas:todas});
+  }catch(e){ console.warn("firmas",e) }
+}
+function aprender(id){
+  const q=S.id.res?.firmaConsulta, a=animals[id]; if(!q||!a) return;
+  let todas=[...(a.firmas||[]),...q.map(f=>({...f,t:"Confirmada",f:null,d:hoy()}))];
+  const ap=todas.filter(x=>x.t==="Confirmada"); if(ap.length>12) todas=todas.filter(x=>x!==ap[0]&&x!==ap[1]);
+  save({...a,firmas:todas}); S.id.res.firmaConsulta=null; toast("Anotado: la próxima vez lo reconoce mejor");
+}
+let backfillHecho=false;
+async function completarFirmas(){
+  if(backfillHecho||!window.__local) return; backfillHecho=true;
+  for(const a of Object.values(animals)){
+    if(window.__local.conModelo() && (a.firmas||[]).some(f=>f.f&&f.e==null)){ const ids=new Set(a.firmas.filter(f=>f.f&&f.e==null).map(f=>f.f)); save({...a,firmas:a.firmas.filter(f=>!ids.has(f.f))}); }
+    const tiene=new Set((animals[a.id]?.firmas||[]).map(f=>f.f));
+    for(const f of (a.fotos||[])){ if(tiene.has(f.id)) continue;
+      try{ const b=await fetch(photoUrl(f.id)).then(r=>r.blob()); await agregarFirmas(a.id,b,f.tipo,f.id) }catch{} }
+  }
+}
+async function subirFoto(id,blob,tipo){
+  if(!assets){toast("No tenés permiso para subir fotos");return}
+  toast("Subiendo foto…");
+  try{const r=await assets.upload(blob,{type:blob.type&&/^image\/(jpeg|png|webp|gif)$/.test(blob.type)?blob.type:"image/jpeg"});
+    const a=animals[id]; if(!a)return; save({...a,fotos:[...(a.fotos||[]),{id:r.id,tipo,fecha:hoy()}]}); toast("Foto guardada");
+    if(window.__local) agregarFirmas(id,blob,tipo,r.id);
+  }catch(e){toast(e?.code==="too_large"?"La foto es muy pesada":e?.code==="unsupported_type"?"Formato no admitido, usá JPG o PNG":"No se pudo subir la foto")}
+}
+
+/* ---------- eventos ---------- */
+document.addEventListener("click",e=>{
+  const t=e.target.closest("button,[data-open]"); if(!t) { if(e.target.id==="sheetBg") closeSheet(); return }
+  if(t.dataset.esp!==undefined){ S.esp=t.dataset.esp; guardarEsp(S.esp); if(S.view==="ficha") S.view="rodeo"; render(); return }
+  if(t.dataset.go){ if(t.dataset.go==="nuevo"){S.prefill=null;formAnimal();return} S.view=t.dataset.go; S.confirmDel=null; render(); window.scrollTo(0,0); return }
+  if(t.dataset.open && t.dataset.confirm && window.__local) aprender(t.dataset.open);
+  if(t.dataset.open){ S.view="ficha"; S.sel=t.dataset.open; S.confirmDel=null; if(t.dataset.tab) S.fichaTab=t.dataset.tab==="faena"?"pesadas":t.dataset.tab==="mat"?"repro":t.dataset.tab; render(); window.scrollTo(0,0); return }
+  if(t.dataset.modo){ S.modo=t.dataset.modo; render(); return }
+  if(t.dataset.ftab){ S.fichaTab=t.dataset.ftab; render(); return }
+  if(t.dataset.add){ S.preTipo=t.dataset.pre||null; formEvento(t.dataset.add); return }
+  if(t.dataset.close!==undefined){ closeSheet(); return }
+  if(t.dataset.rm){ const [k,i]=t.dataset.rm.split(":"); const a=animals[S.sel]; const arr=[...(a[k]||[])]; const [quit]=arr.splice(+i,1); const extra=k==="fotos"&&quit?{firmas:(a.firmas||[]).filter(f=>f.f!==quit.id)}:{}; save({...a,[k]:arr,...extra}); return }
+  switch(t.id){
+    case "btnAnalizar": identificar(); break;
+    case "btnLimpiar": S.id={file:null,blob:null,url:null,res:null,busy:false,cmp:null,err:""}; render(); break;
+    case "btnComparar": comparar(); break;
+    case "btnOtroBurro": S.id.burro=null; render(); break;
+    case "btnNoPersona": S.id.sinPersona=true; identificar(); break;
+    case "btnLimpiar2": S.id={file:null,blob:null,url:null,res:null,busy:false,cmp:null,err:""}; render(); window.scrollTo(0,0); break;
+    case "btnNuevoDesdeFoto": { const r=S.id.res||{}; const esp=ESPECIES[r.especie]?r.especie:(S.esp||"Bovino");
+      S.prefill={especie:esp,raza:r.raza_probable||"",sexo:r.sexo_probable==="H"||r.sexo_probable==="M"?r.sexo_probable:"",categoria:ESPECIES[esp].cats.find(c=>c.toLowerCase()===String(r.categoria_probable||"").toLowerCase())||"",pelaje:r.pelaje||"",senas:r.senas_visibles||"",caravana:r.caravana_leida||"",estado:"activo",blob:S.id.blob};
+      formAnimal(); break; }
+    case "btnEditar": formAnimal(animals[S.sel]); break;
+    case "btnDieta": formDieta(); break;
+    case "btnExport": window.__web.exportar().then(()=>toast("Copia descargada")).catch(()=>toast("No se pudo exportar")); break;
+    case "btnMat": { const a=animals[S.sel]; formMaternidad(a, necesitaMat(a,estado(a)) && !evalMat(a).ok); break; }
+    case "btnFoto": case "btnFoto2": formFoto(); break;
+    case "btnBorrar": if(S.confirmDel===S.sel){S.confirmDel=null;removeAnimal(S.sel)} else {S.confirmDel=S.sel;render()} break;
+    case "btnBorrarEj": Object.values(animals).filter(a=>a.ejemplo).forEach(a=>removeAnimal(a.id)); S.view="rodeo"; render(); break;
+  }
+});
+document.addEventListener("change",async e=>{
+  const t=e.target;
+  if(t.id==="camIn"||t.id==="galIn"){ const f=t.files[0]; if(!f)return; const b=await shrink(f);
+    if(S.id.url) URL.revokeObjectURL(S.id.url);
+    S.id={file:f,blob:b,url:URL.createObjectURL(b),res:null,busy:false,cmp:null,err:""}; render(); }
+  if(t.id==="impIn" && t.files[0]){ window.__web.importar(t.files[0]).then(n=>{toast(`Importados ${n} registros`)}).catch(()=>toast("El archivo no es una copia válida")) }
+  if(t.id==="fEsp"){S.fEsp=t.value;render()}
+  if(t.id==="fEst"){S.fEst=t.value;render()}
+});
+document.addEventListener("input",e=>{ if(e.target.id==="q"){S.q=e.target.value; const pos=e.target.selectionStart; render(); const q=$("#q"); q.focus(); q.setSelectionRange(pos,pos)} });
+document.addEventListener("keydown",e=>{ if(e.key==="Escape") closeSheet() });
+document.addEventListener("submit",e=>{ if(e.target.id==="fCodigo"){ e.preventDefault(); const v=$("#codigoIn").value.trim(); if(v){ window.__web.setCodigo(v); toast("Código guardado"); render() } } });
+
+/* ---------- arranque ---------- */
+render();
+(async()=>{
+  const C=window.claude;
+  const [d,as,sm]=await Promise.all([C?.use?.("db"),C?.use?.("assets"),C?.use?.("sample")].map(p=>Promise.resolve(p).catch(()=>null)));
+  db=d; assets=as; sample=sm;
+  if(sample){ const lim=await sample.limits().catch(()=>null); imgOK=!!lim?.images }
+  ready=true;
+  if(db){ col=db.collection("animales");
+    col.onSnapshot(snap=>{ const next={}; for(const doc of snap.docs) next[doc.id]={...doc.data(),id:doc.id}; animals=next; render(); if(window.__local) setTimeout(completarFirmas,3000) },
+      ()=>toast("Se perdió la conexión con el rodeo; recargá la página"));
+  } else render();
+})();
+</script>
+
+<script>if("serviceWorker" in navigator) addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));</script>
+</body>
+</html>
